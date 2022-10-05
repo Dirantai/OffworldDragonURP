@@ -15,6 +15,7 @@ public class FogSetter : MonoBehaviour
     public float waterEnd;
     public float density;
     public Color waterColour;
+    public GameObject oceanObject;
 
     public GameObject splashEffect;
 
@@ -46,6 +47,13 @@ public class FogSetter : MonoBehaviour
                 float smoothLerp = SmoothStep(waterEnd, waterStart, distance);
                 RenderSettings.fogEndDistance = Mathf.Lerp(30000, density, smoothLerp);
             }
+
+            if(distance < atmosphericStart){
+                oceanObject.SetActive(true);
+            }else{
+                oceanObject.SetActive(false);
+            }
+
             ObjectChecker(distance, player);
         }
 
