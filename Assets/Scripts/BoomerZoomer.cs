@@ -65,7 +65,7 @@ public class BoomerZoomer : ShipAI
         switch (shipState)
         {
             case ShipState.Breakingoff:
-                movementInput = new Vector3(0.4f, 0, 0);
+                movementInput = new Vector3(0.2f, 0, 0);
                 float sign = direction % 2;
                 if(sign > 0){
                     sign = -1;
@@ -73,12 +73,10 @@ public class BoomerZoomer : ShipAI
                     sign = 1;
                 }
 
-                if(direction < 33){
-                    rotationInput = new Vector3(-0.1f * sign, 0, 0);
-                }else if(direction >= 33 && direction < 66){
-                    rotationInput = new Vector3(0, -0.1f * sign, 0);
-                }else{
+                if(direction < 50){
                     rotationInput = new Vector3(0, 0, -0.1f * sign);
+                }else if(direction >= 50){
+                    rotationInput = new Vector3(0, -0.1f * sign, 0);
                 }
                 
                 if(dotDirection > 0){

@@ -70,8 +70,6 @@ public class RadarSystem : MonoBehaviour
             }
 
             lines.SetPositions(radarPositions);
-
-            transform.rotation = player.rotation;
         }
         else
         {

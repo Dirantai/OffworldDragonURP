@@ -40518,7 +40518,7 @@ MonoBehaviour:
   shakeSystem: {fileID: 0}
   soundSystem: {fileID: 7761798755859679590}
   shipMovementValues:
-    maxSpeedVector: {x: 100, y: 70, z: 70}
+    maxSpeedVector: {x: 120, y: 70, z: 70}
     maxForceVector: {x: 40, y: 40, z: 40}
     inputSlowdownMultiplier: 0.7
     speedMultiplier: 1.5
@@ -40537,7 +40537,7 @@ MonoBehaviour:
   mutedVisuals: 0
   vJoy: 1
   shipStats:
-    shieldGrade: 75
+    shieldGrade: 50
     hullGrade: 50
     shieldDelay: 2
     shieldRechargeRate: 4
