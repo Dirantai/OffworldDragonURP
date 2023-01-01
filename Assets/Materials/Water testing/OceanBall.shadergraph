@@ -9753,7 +9753,7 @@
     "m_DefaultRefNameVersion": 0,
     "m_RefNameGeneratedByDisplayName": "",
     "m_DefaultReferenceName": "BOOLEAN_9091035EC418442ABB6ED30583B758D5_ON",
-    "m_OverrideReferenceName": "",
+    "m_OverrideReferenceName": "_RECEIVE_SHADOWS_OFF",
     "m_GeneratePropertyBlock": true,
     "m_UseCustomSlotLabel": false,
     "m_CustomSlotLabel": "",

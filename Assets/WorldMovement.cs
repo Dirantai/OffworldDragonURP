@@ -39,26 +39,44 @@ public class WorldMovement : MonoBehaviour
             Vector3 playerToObject = wObject.transform.position - Camera.main.transform.position;
             float distance = playerToObject.magnitude;
             float currentMultiplier = wObject.farDistance;
+            float maxDistance = 4000;
 
             if(distance > wObject.farHideDistance){
                 wObject.planet.SetActive(false);
             }else{
                 wObject.planet.SetActive(true);
             }
-
+            MaterialPropertyBlock newMat = new MaterialPropertyBlock();
+            Color originalColour = wObject.planetIcon.GetComponentInChildren<Renderer>().material.GetColor("_Color");
+            newMat.SetColor("_Color", new Color(originalColour.r, originalColour.g, originalColour.b, 1 - SmoothStep(wObject.hideDistance, wObject.farHideDistance, distance)));
+            wObject.planetIcon.GetComponentInChildren<Renderer>().SetPropertyBlock(newMat);
             if(distance < wObject.hideDistance){
                 wObject.planetIcon.gameObject.SetActive(false);
             }else{
                 wObject.planetIcon.gameObject.SetActive(true);
-                if(sunDistance < distance && wObject != sun){
-                    currentMultiplier /= 10;
+                if(sunDistance > distance && wObject != sun){
+                    maxDistance -= 300;
                 }
-                wObject.planetIcon.position = Camera.main.transform.position + (playerToObject.normalized * (distance / currentMultiplier));
-                float closeRadius = wObject.planetRadius / (currentMultiplier);
+                wObject.planetIcon.position = Camera.main.transform.position + (playerToObject.normalized * maxDistance);
+                float closeRadius = (wObject.planetRadius * maxDistance) / distance;
                 float scale = 1000 * (closeRadius / wObject.planetRadius);
                 wObject.planetIcon.localScale = new Vector3(scale, scale, scale);
             }
         }
+    }
+
+    float SmoothStep(float start, float end, float input){
+        float output = 0;
+
+        float x = (input - end) / (start - end);
+
+        output = x * x * (3 - (2 * x));
+
+        if(input < start) output = 1;
+
+        if(input > end) output = 0;
+
+        return output;
     }
 
     void HandleWarpZone(float distance, Vector3 direction){

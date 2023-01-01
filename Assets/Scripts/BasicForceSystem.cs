@@ -22,6 +22,8 @@ public class BasicForceSystem : MonoBehaviour
 
     private MovementValues movementValues = new MovementValues();
     public bool boosting;
+    public bool superCruising;
+    public bool superCruisingEnd;
     public float boostDuration;
     public float currentBoost;
 
@@ -40,7 +42,7 @@ public class BasicForceSystem : MonoBehaviour
             float direction = Vector3.Dot(-thruster.transform.forward, shipAxisDirection * inputReceived);
             float boostMultiplier = 1;
 
-            if(!boosting && boostDuration > 0 && canBoost){
+            if(!boosting && boostDuration > 0 && canBoost || superCruising || superCruisingEnd){
                 boostMultiplier = 5;
             }
 

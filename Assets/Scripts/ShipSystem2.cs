@@ -48,6 +48,7 @@ public class ShipSystem2 : BasicForceSystem
     private bool splashTracker;
 
     public InputActionAsset inputs;
+    public LayerMask layerMask;
 
     public void SetOrbittingBody(Transform body, float g){
         orbittingBody = body;
@@ -84,7 +85,6 @@ public class ShipSystem2 : BasicForceSystem
 
     private void Start()
     {
-
         // if(cameraObject != null){
         //     startRotation = cameraObject.localRotation;
         // }
@@ -183,9 +183,6 @@ public class ShipSystem2 : BasicForceSystem
             }
         }
     }
-
-    //private bool locked;
-
     public virtual void OnUpdate()
     {
         ShieldRegen();
@@ -193,11 +190,6 @@ public class ShipSystem2 : BasicForceSystem
         fakeDelta += inputs["Mouse Delta"].ReadValue<Vector2>();
         fakeDelta = Vector2.ClampMagnitude(fakeDelta, 1);
         fakeDelta = Vector2.Lerp(fakeDelta, Vector2.zero, 6 * Time.deltaTime);
-
-        if (inputs["Missile"].triggered)
-        {
-            missiles?.FireMissile(gunSystem.shipTarget);
-        }
 
         if(currentBoost < 100){
             currentBoost += Time.deltaTime * shipStats.boostRechargeSpeed * boostPenalty;
@@ -207,21 +199,44 @@ public class ShipSystem2 : BasicForceSystem
 
         if(currentBoost >= 70) boostReady = true;
 
-        if (inputs["Boost"].ReadValue<float>() > 0 && boostReady){
-            ShakeCamera(5, 5, true);
-            boostReady = false;
-            boosting = true;
-            boostPenalty = Mathf.Clamp(currentBoost / 100, 0.8f, 1);
-            currentBoost = 0;
-            boostDuration = 0;
-            soundSystem?.SetVolume(1, "Boost");
-            soundSystem?.PlaySounds("Boost");
-        }
+        if(!superCruising){
+            if (inputs["Missile"].triggered)
+            {
+                missiles?.FireMissile(gunSystem.shipTarget);
+            }
 
-        if (inputs["Decouple"].triggered) decoupled = !decoupled;
+            if (inputs["Boost"].ReadValue<float>() > 0 && boostReady){
+                ShakeCamera(5, 5, true);
+                boostReady = false;
+                boosting = true;
+                boostPenalty = Mathf.Clamp(currentBoost / 100, 0.8f, 1);
+                currentBoost = 0;
+                boostDuration = 0;
+                soundSystem?.SetVolume(1, "Boost");
+                soundSystem?.PlaySounds("Boost");
+            }
+
+            if (inputs["Decouple"].triggered) decoupled = !decoupled;
+        }else{
+            SuperCruise();
+            decoupled = false;
+        }
 
         if (inputs["Vjoy"].triggered){
             vJoy = !vJoy;
+        }
+    }
+
+    void SuperCruise(){
+        RaycastHit hit;
+        Vector3 hitPos = Vector3.zero;
+        if(Physics.SphereCast(transform.position, 1, transform.forward, out hit, 1500, layerMask)){
+            hitPos = hit.point;
+        }
+
+        if(hitPos != Vector3.zero){
+            superCruising = false;
+            superCruisingEnd = true;
         }
     }
 
@@ -286,6 +301,22 @@ public class ShipSystem2 : BasicForceSystem
                 maxSpeedVector = maxSpeedVector * shipMovementValues.speedMultiplier;
                 forceVector = forceVector * shipMovementValues.forceMultiplier;
                 movementInput = new Vector3(movementInput.x + 1, movementInput.y, movementInput.z);
+            }
+        }
+
+        if(superCruising){
+            maxSpeedVector = new Vector3(800, 30, 30);
+            forceVector = new Vector3(800, 300, 300);
+            movementInput = new Vector3(movementInput.x + 2, 0, 0);
+        }
+
+        if(superCruisingEnd){
+            maxSpeedVector = new Vector3(1000, 1, 1);
+            forceVector = new Vector3(1000, 1000, 1000);
+            movementInput = new Vector3(0, 0, 0);
+
+            if(shipRigid.velocity.magnitude < shipMovementValues.maxSpeedVector.x){
+                superCruisingEnd = false;
             }
         }
 
