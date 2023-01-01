@@ -10,11 +10,16 @@ public class WorldMovement : MonoBehaviour
 
     public PlanetInfo[] worldObjects;
 
+    private PlanetInfo sun;
+
     public float cellSize;
 
     void Start(){
         player = GameObject.FindGameObjectWithTag("Player").transform;
         worldObjects = GameObject.FindObjectsOfType<PlanetInfo>();
+        foreach(PlanetInfo wObject in worldObjects){
+            if(wObject.sun) sun = wObject;
+        }
     }
 
     // Update is called once per frame
@@ -29,17 +34,22 @@ public class WorldMovement : MonoBehaviour
     }
 
     void HandleDistantObjects(){
+        float sunDistance = (sun.transform.position - Camera.main.transform.position).magnitude;
         foreach(PlanetInfo wObject in worldObjects){
             Vector3 playerToObject = wObject.transform.position - Camera.main.transform.position;
             float distance = playerToObject.magnitude;
+            float currentMultiplier = wObject.farDistance;
             if(distance < wObject.hideDistance){
                 wObject.planetIcon.gameObject.SetActive(false);
             }else{
                 wObject.planetIcon.gameObject.SetActive(true);
-                wObject.planetIcon.position = Camera.main.transform.position + (playerToObject.normalized * (distance / wObject.farDistance));
-                float closeRadius = wObject.planetRadius / (wObject.farDistance);
-                float scale = wObject.planetRadius / closeRadius;
-                wObject.planetIcon.localScale = new Vector3(scale / 10, scale / 10, scale / 10);
+                if(sunDistance < distance && wObject != sun){
+                    currentMultiplier /= 10;
+                }
+                wObject.planetIcon.position = Camera.main.transform.position + (playerToObject.normalized * (distance / currentMultiplier));
+                float closeRadius = wObject.planetRadius / (currentMultiplier);
+                float scale = 1000 * (closeRadius / wObject.planetRadius);
+                wObject.planetIcon.localScale = new Vector3(scale, scale, scale);
             }
         }
     }
