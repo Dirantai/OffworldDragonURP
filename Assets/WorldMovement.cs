@@ -34,12 +34,16 @@ public class WorldMovement : MonoBehaviour
     }
 
     void HandleDistantObjects(){
-        float sunDistance = (sun.transform.position - Camera.main.transform.position).magnitude;
+        
         foreach(PlanetInfo wObject in worldObjects){
             Vector3 playerToObject = wObject.transform.position - Camera.main.transform.position;
+            float parentDistance = 0;
             float distance = playerToObject.magnitude;
-            float currentMultiplier = wObject.farDistance;
-            float maxDistance = 4000;
+            if (wObject.parentBody == null){
+                wObject.currentDistance = 4000;
+            }else{
+                parentDistance = (wObject.parentBody.transform.position - Camera.main.transform.position).magnitude;
+            }
 
             if(distance > wObject.farHideDistance){
                 wObject.planet.SetActive(false);
@@ -54,11 +58,15 @@ public class WorldMovement : MonoBehaviour
                 wObject.planetIcon.gameObject.SetActive(false);
             }else{
                 wObject.planetIcon.gameObject.SetActive(true);
-                if(sunDistance > distance && wObject != sun){
-                    maxDistance -= 300;
+                if(wObject.parentBody != null){
+                    if(parentDistance > distance){
+                        wObject.currentDistance = wObject.parentBody.currentDistance - 300;
+                    }else{
+                        wObject.currentDistance = wObject.parentBody.currentDistance + 300;
+                    }
                 }
-                wObject.planetIcon.position = Camera.main.transform.position + (playerToObject.normalized * maxDistance);
-                float closeRadius = (wObject.planetRadius * maxDistance) / distance;
+                wObject.planetIcon.position = Camera.main.transform.position + (playerToObject.normalized * wObject.currentDistance);
+                float closeRadius = (wObject.planetRadius * wObject.currentDistance) / distance;
                 float scale = 1000 * (closeRadius / wObject.planetRadius);
                 wObject.planetIcon.localScale = new Vector3(scale, scale, scale);
             }
