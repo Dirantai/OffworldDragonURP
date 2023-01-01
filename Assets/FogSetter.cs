@@ -44,11 +44,16 @@ public class FogSetter : MonoBehaviour
                 }   
                 done = false;
                 RenderSettings.fogEndDistance = Mathf.Lerp(RenderSettings.fogEndDistance, atmosphericDensity, 30 * Time.deltaTime);
-            }else{
+            }else if (distance <= atmosphericEnd){
                 done = true;
                 RenderSettings.fogColor = waterColour;
                 float smoothLerp = SmoothStep(waterEnd, waterStart, distance);
                 RenderSettings.fogEndDistance = Mathf.Lerp(30000, density, smoothLerp);
+            }else{
+                if(!done){
+                    RenderSettings.fogEndDistance = 30000;
+                    done = true;
+                }
             }
 
             if(distance > atmosphericStart){
@@ -91,7 +96,7 @@ public class FogSetter : MonoBehaviour
     void ObjectChecker(float distance, Transform rigidObject){
         Rigidbody rigid = rigidObject.GetComponent<Rigidbody>();
         ShipSystem2 splashTracker = rigidObject.GetComponent<ShipSystem2>();
-        if(rigid != null){
+        if(rigid != null && distance < atmosphericEnd){
             if((distance < waterStart && !splashTracker.GetTracker()) || (distance > waterStart && splashTracker.GetTracker())){
                 splashTracker.SetTracker(!splashTracker.GetTracker());
                 Vector3 velocity = rigid.velocity;

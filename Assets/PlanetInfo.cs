@@ -8,5 +8,7 @@ public class PlanetInfo : MonoBehaviour
     public float planetRadius;
     public float farDistance = 100;
     public float hideDistance;
+    public float farHideDistance;
+    public GameObject planet;
     public Transform planetIcon;
 }

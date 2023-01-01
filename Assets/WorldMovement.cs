@@ -39,6 +39,13 @@ public class WorldMovement : MonoBehaviour
             Vector3 playerToObject = wObject.transform.position - Camera.main.transform.position;
             float distance = playerToObject.magnitude;
             float currentMultiplier = wObject.farDistance;
+
+            if(distance > wObject.farHideDistance){
+                wObject.planet.SetActive(false);
+            }else{
+                wObject.planet.SetActive(true);
+            }
+
             if(distance < wObject.hideDistance){
                 wObject.planetIcon.gameObject.SetActive(false);
             }else{
