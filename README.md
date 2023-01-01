@@ -16,7 +16,7 @@ Things I need to research and/or add:
 - Docking
 - Ship customisation
 - Destroyer flight systems
-- Other systems
+- Other solar systems
 - Galaxy map system
 - Jumpgates/Jumpdrives
 - An Actual Story
