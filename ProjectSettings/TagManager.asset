@@ -12,6 +12,7 @@ TagManager:
   - Node
   - Ally
   - World
+  - LargeObject
   layers:
   - Default
   - TransparentFX

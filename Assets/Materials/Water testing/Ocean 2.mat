@@ -12,23 +12,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  version: 4
+  version: 7
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Ocean 2
   m_Shader: {fileID: -6465566751694194690, guid: 0b52cd93a6e34e6409c88536109f3d6d, type: 3}
-  m_ShaderKeywords: BOOLEAN_9091035EC418442ABB6ED30583B758D5_ON
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - BOOLEAN_9091035EC418442ABB6ED30583B758D5_ON
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 1
-  m_CustomRenderQueue: 2998
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -108,6 +113,7 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - BOOLEAN_9091035EC418442ABB6ED30583B758D5: 1
     - Vector1_0ada3b8434d94907bf31e160fc07a03c: 0.2
@@ -127,11 +133,13 @@ Material:
     - Vector1_330795ef94ae440da8675dab260acd67: 1
     - Vector1_384b044ea18046fb915cb08addd79686: 1
     - Vector1_4: 0.075
+    - Vector1_5: 47.6
     - Vector1_5006edf5259d4def8ccb93a5c80ae7b7: 540
     - Vector1_542a740bff86437fb89abaf9d8098f94: 10
     - Vector1_5dcac2b625c44d8a82a7c2fc049e2881: 0.1
     - Vector1_5f0fa0f9d8fa445aa168e3c4c72765ab: 9.75
-    - Vector1_77aa9ad2b8014282a93b364aca3eb544: 0.55
+    - Vector1_6: 100
+    - Vector1_77aa9ad2b8014282a93b364aca3eb544: 0.6
     - Vector1_79a1d2697489415287168bf72341901c: 200
     - Vector1_8433376073fe46a6815e4a390d0ce013: 0.01
     - Vector1_92456404d3a04833af14217bb75bef3b: 1
@@ -167,6 +175,7 @@ Material:
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
+    - _QueueControl: 1
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Smoothness: 0.5
@@ -190,12 +199,12 @@ Material:
     - Vector4_0341752afa95455d80325f713b83ca48: {r: 354.79, g: 413.3, b: -106.94, a: 1}
     - Vector4_1: {r: 0.94, g: 1, b: 66.7, a: 2}
     - Vector4_18c3d64fd5c3457bb3662ae8467a9288: {r: 1, g: 0, b: 1, a: 1}
-    - Vector4_2: {r: 0.9, g: 1, b: 47.7, a: 1}
+    - Vector4_2: {r: 0.9, g: 2, b: 47.7, a: 1}
     - Vector4_26382e3be8cc46bcbc3b6f66d4830baf: {r: 1.9, g: 2, b: 36.87, a: 3}
-    - Vector4_3: {r: 0.1, g: 0.47, b: 121.88, a: 5}
+    - Vector4_3: {r: 0.1, g: 1, b: 121.88, a: 5}
     - Vector4_4: {r: 49.33, g: 19.9, b: 1.62, a: 1}
     - Vector4_4c3eb4d5c3bc49b489213cc233530696: {r: -12.62, g: 27.65, b: -61.9, a: 1}
-    - Vector4_5: {r: 0.2, g: 0.53, b: 81.4, a: 4}
+    - Vector4_5: {r: 0.2, g: 1, b: 81.4, a: 4}
     - Vector4_6: {r: -53.67, g: 56.4, b: 15.15, a: 1}
     - Vector4_eed6a843aa104e869768b5a844c575cd: {r: -34.6, g: -0.18, b: -54.6, a: 1}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}

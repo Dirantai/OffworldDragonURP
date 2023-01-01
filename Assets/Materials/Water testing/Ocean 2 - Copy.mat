@@ -12,26 +12,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  version: 4
+  version: 7
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Ocean 2 - Copy
   m_Shader: {fileID: -6465566751694194690, guid: 0b52cd93a6e34e6409c88536109f3d6d, type: 3}
-  m_ShaderKeywords: 
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - BOOLEAN_9091035EC418442ABB6ED30583B758D5_ON
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 1
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - Texture2D_35f5d0c46eed446388950e4129946542:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - Texture2D_cc33e52c33d8415eb9fd9e8372112203:
         m_Texture: {fileID: 2800000, guid: 30a6364417d9f8646bd05b2c138c5bcb, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -104,18 +113,25 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
+    - BOOLEAN_9091035EC418442ABB6ED30583B758D5: 1
     - Vector1_0ada3b8434d94907bf31e160fc07a03c: 0.2
     - Vector1_0fe02166c04f4ad28cc78c0a291cc01b: 1
+    - Vector1_1: 0
     - Vector1_1249ca0392dc4c94b37e069273afe6a2: 1
     - Vector1_1ac8262ece15445097cf57ffced3f5e4: 396.12
+    - Vector1_2: 1
     - Vector1_21094cd18a414f649cf70d15e6796f02: 1
     - Vector1_24fc32075f2f4ff19ce01d7878b42023: 0
     - Vector1_2af563c8460446a9b01e64990c126e6d: 0
+    - Vector1_2c6cdebca4794f4bb1d5f6ea51c0a281: 0
     - Vector1_2eff79da13424371901d99632cdc3672: 30
+    - Vector1_3: 3.77
     - Vector1_30a77417b71a41f7b06f73a64b458aca: 1.01
     - Vector1_330795ef94ae440da8675dab260acd67: 1
     - Vector1_384b044ea18046fb915cb08addd79686: 1
+    - Vector1_4: 0
     - Vector1_5006edf5259d4def8ccb93a5c80ae7b7: 0
     - Vector1_542a740bff86437fb89abaf9d8098f94: 1
     - Vector1_5dcac2b625c44d8a82a7c2fc049e2881: 0.1
@@ -129,9 +145,14 @@ Material:
     - Vector1_af26b765d6be496f9ed9fcdf559e895e: 0.1
     - Vector1_b9bfae1a92014cfc87be007943422d12: 1
     - Vector1_c056fc9c01ed413cbc0d8def45e36bad: 0.05
+    - Vector1_d19ef5e20c7e47789fb46dc0162fce4b: 1
+    - Vector1_d19ef5e20c7e47789fb46dc0162fce4b_1: 1
+    - Vector1_d43d1445d8224ead8a825e0e9300d3ff: 0
     - Vector1_e001c09768b045a49a5734bc2c92616c: 3
     - Vector1_f94a6e0e09f94518b3f557de084cf910: 2
     - Vector1_fa3a532b96ea4138b0c1d3be563d0ad4: 0.1
+    - Vector1_fc44b1e3232c4c62a81899f40b137c1f: 1
+    - Vector1_ff116cf85c2b47c8966d86590a4267f0: 0
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -149,6 +170,7 @@ Material:
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
+    - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Smoothness: 0.5
@@ -159,6 +181,7 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
+    - Color_1: {r: 1, g: 1, b: 1, a: 0}
     - Color_43f74ebf712d4a5db80a4dac56e5a4c1: {r: 0.13314347, g: 0.1509434, b: 0.14499019, a: 0}
     - Color_7e66324e98a043848cf998dcef29baed: {r: 0.2264151, g: 0.2264151, b: 0.2264151, a: 0}
     - Color_86dc2be8928a4506a12f436ff32280a6: {r: 0.23642756, g: 0.7264151, b: 0.30593953, a: 0}

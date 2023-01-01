@@ -41,16 +41,19 @@ public class RadarSystem : MonoBehaviour
                 {
                     markers[enemy] = Instantiate(markerPrefab, transform.position, transform.rotation, transform);
                 }
-                Vector3 playerToEnemy = enemies[enemy].transform.position - player.transform.position;
+                Vector3 playerToEnemy = enemies[enemy].transform.localPosition - player.transform.localPosition;
 
-                float dotProduct = Vector3.Dot(player.forward, playerToEnemy);
+
+                float dotProduct = Vector3.Dot(transform.forward, playerToEnemy);
 
                 if (dotProduct > 0)
                 {
+                    Debug.DrawLine(transform.position,playerToEnemy, Color.red);
                     markers[enemy].GetComponentInChildren<MeshRenderer>().material = inFront;
                 }
                 else
                 {
+                    Debug.DrawLine(transform.position,playerToEnemy, Color.white);
                     markers[enemy].GetComponentInChildren<MeshRenderer>().material = behind;
                 }
 

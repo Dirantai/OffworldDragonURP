@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 
 public class ShipSystem2 : BasicForceSystem
 {
+    public bool invincible;
     public Rigidbody shipRigid;
     public Transform shipTarget;
     //public Transform cameraObject;
@@ -369,15 +370,17 @@ public class ShipSystem2 : BasicForceSystem
 
     public void OnDamage(float damage)
     {
-        if (currentShieldHealth > 0)
-        {
-            currentShieldHealth -= damage / shipStats.shieldGrade;
-            currentRegenTime = shipStats.shieldDelay;
-        }
-        else
-        {
-            currentShieldHealth = 0;
-            currentHullHealth -= damage / shipStats.hullGrade;
+        if(!invincible){
+            if (currentShieldHealth > 0)
+            {
+                currentShieldHealth -= damage / shipStats.shieldGrade;
+                currentRegenTime = shipStats.shieldDelay;
+            }
+            else
+            {
+                currentShieldHealth = 0;
+                currentHullHealth -= damage / shipStats.hullGrade;
+            }
         }
     }
 
