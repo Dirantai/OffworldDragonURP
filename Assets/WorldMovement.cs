@@ -49,16 +49,16 @@ public class WorldMovement : MonoBehaviour
                 parentDistance = (wObject.parentBody.transform.position - Camera.main.transform.position).magnitude;
             }
 
-            if(distance > 5000){
+            if(distance > 5500){
                 wObject.planet.SetActive(false);
             }else{
                 wObject.planet.SetActive(true);
             }
             MaterialPropertyBlock newMat = new MaterialPropertyBlock();
             Color originalColour = wObject.planetIcon.GetComponentInChildren<Renderer>().material.GetColor("_Color");
-            
+            newMat.SetColor("_Color", new Color(originalColour.r, originalColour.g, originalColour.b, 1 - SmoothStep(4500, 5000, distance)));
             wObject.planetIcon.GetComponentInChildren<Renderer>().SetPropertyBlock(newMat);
-            if(distance < wObject.currentDistance - 100){
+            if(distance < wObject.hideDistance){
                 wObject.planetIcon.gameObject.SetActive(false);
             }else{
                 wObject.planetIcon.gameObject.SetActive(true);
@@ -76,7 +76,6 @@ public class WorldMovement : MonoBehaviour
                 closeRadius = (wObject.planetRadius * fakeDistance) / distance;
                 wObject.planetIcon.position = Camera.main.transform.position + (playerToObject.normalized * fakeDistance);
 
-                newMat.SetColor("_Color", new Color(originalColour.r, originalColour.g, originalColour.b, 1 - SmoothStep(4500, 5000, distance)));
                 float scale = 1000 * (closeRadius / wObject.planetRadius);
                 wObject.planetIcon.localScale = new Vector3(scale, scale, scale);
             }
