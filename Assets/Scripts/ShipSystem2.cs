@@ -46,6 +46,7 @@ public class ShipSystem2 : BasicForceSystem
     private float currentThrusterVolume;
     //private Quaternion startRotation;
     private bool splashTracker;
+    private bool chargeCruise;
 
     public InputActionAsset inputs;
     public LayerMask layerMask;
@@ -183,6 +184,8 @@ public class ShipSystem2 : BasicForceSystem
             }
         }
     }
+    private float cruiseTimer;
+    private bool chargeToggle;
     public virtual void OnUpdate()
     {
         ShieldRegen();
@@ -190,6 +193,19 @@ public class ShipSystem2 : BasicForceSystem
         fakeDelta += inputs["Mouse Delta"].ReadValue<Vector2>();
         fakeDelta = Vector2.ClampMagnitude(fakeDelta, 1);
         fakeDelta = Vector2.Lerp(fakeDelta, Vector2.zero, 6 * Time.deltaTime);
+
+        chargeCruise = inputs["Super Cruise"].ReadValue<float>() > 0.5f && !superCruising ? true : false;
+        SuperCruise();
+
+        if(chargeCruise){
+            cruiseTimer += Time.deltaTime;
+            if(cruiseTimer >= 3){
+                chargeToggle = false;
+                superCruising = true;
+            }
+        }else{
+           cruiseTimer = 0; 
+        }
 
         if(currentBoost < 100){
             currentBoost += Time.deltaTime * shipStats.boostRechargeSpeed * boostPenalty;
@@ -218,7 +234,15 @@ public class ShipSystem2 : BasicForceSystem
 
             if (inputs["Decouple"].triggered) decoupled = !decoupled;
         }else{
-            SuperCruise();
+            if(inputs["Super Cruise"].ReadValue<float>() < 0.5f){
+                chargeToggle = true;
+            }
+            if(chargeToggle){
+                if(inputs["Super Cruise"].ReadValue<float>() > 0.5f){
+                    superCruising = false;
+                    superCruisingEnd = true;
+                }
+            }
             decoupled = false;
         }
 
@@ -235,8 +259,11 @@ public class ShipSystem2 : BasicForceSystem
         }
 
         if(hitPos != Vector3.zero){
-            superCruising = false;
-            superCruisingEnd = true;
+            chargeCruise = false;
+            if(superCruising){
+                superCruising = false;
+                superCruisingEnd = true;
+            }
         }
     }
 
@@ -305,8 +332,8 @@ public class ShipSystem2 : BasicForceSystem
         }
 
         if(superCruising){
-            maxSpeedVector = new Vector3(800, 30, 30);
-            forceVector = new Vector3(800, 300, 300);
+            maxSpeedVector = new Vector3(1000, 1, 1);
+            forceVector = new Vector3(1000, 1000, 1000);
             movementInput = new Vector3(movementInput.x + 2, 0, 0);
         }
 
@@ -426,5 +453,6 @@ public class ShipSystem2 : BasicForceSystem
         currentHullHealth = 0;
         Transform camRig = GameObject.FindGameObjectWithTag("CamRig").transform;
         camRig.transform.parent = null;
+        gunSystem.KillIcons();
     }
 }

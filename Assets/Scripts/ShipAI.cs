@@ -7,8 +7,9 @@ public class ShipAI : ShipSystem2
     
     protected Vector3 movementTarget;
     protected Vector3 movementVector;
-
+    public UIElementHandler uiHandler;
     public GameObject marker;
+
     protected UIElementSystem markerUI;
     protected Vector3 currentInput;
     public Transform canvas;
@@ -48,9 +49,11 @@ public class ShipAI : ShipSystem2
     // Start is called before the first frame update
     public override void OnStart()
     {
+        uiHandler = GameObject.FindObjectOfType<UIElementHandler>();
         canvas = GameObject.FindGameObjectWithTag("Canvas").transform;
         GameObject tempObj = Instantiate(marker, canvas) as GameObject;
         markerUI = tempObj.GetComponent<UIElementSystem>();
+        uiHandler.AddElement(markerUI);
     }
 
     public void SetAIVariables(ShipAI AIParams)
@@ -504,6 +507,7 @@ public class ShipAI : ShipSystem2
     {
         float distanceToShipTarget = (transform.position - shipTarget.position).magnitude;
         shipTarget.GetComponent<ShipSystem2>().OnKill(distanceToShipTarget);
+        uiHandler.RemoveElement(markerUI);
         Destroy(markerUI.gameObject);
     }
 

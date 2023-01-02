@@ -216,6 +216,12 @@ public class GunTest : MonoBehaviour
         }
     }
 
+    public void KillIcons(){
+        foreach(Turret turret in turrets){
+            turret.DeleteAimIcons();
+        }
+    }
+
     Vector3 CalculateSpreadVector(Turret.WeaponValues weaponValues) //calculates spread and turns it into a vector
     {
         var spreadVector = Vector3.zero;

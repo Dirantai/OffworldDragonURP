@@ -5,6 +5,7 @@ using UnityEngine;
 public class WorldMovement : MonoBehaviour
 {
     private Transform player;
+    public UIElementHandler uiHandler;
 
     private bool done;
 
@@ -60,9 +61,9 @@ public class WorldMovement : MonoBehaviour
                 wObject.planetIcon.gameObject.SetActive(true);
                 if(wObject.parentBody != null){
                     if(parentDistance > distance){
-                        wObject.currentDistance = wObject.parentBody.currentDistance - 300;
+                        wObject.currentDistance = wObject.parentBody.currentDistance - 500;
                     }else{
-                        wObject.currentDistance = wObject.parentBody.currentDistance + 300;
+                        wObject.currentDistance = wObject.parentBody.currentDistance + 500;
                     }
                 }
                 wObject.planetIcon.position = Camera.main.transform.position + (playerToObject.normalized * wObject.currentDistance);
@@ -90,6 +91,7 @@ public class WorldMovement : MonoBehaviour
     void HandleWarpZone(float distance, Vector3 direction){
         if(Mathf.Abs(distance) > cellSize && !done){
             done = true;
+            uiHandler.MoveElements(direction * -distance);
             for (int o = 0; o < transform.childCount; o++){
                 transform.GetChild(o).position += direction * -distance;
             }

@@ -11,7 +11,8 @@
                     "id": "96817b0b-d247-4fb3-9f6b-5ba370469614",
                     "expectedControlType": "Axis",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Vertical Thrust",
@@ -19,7 +20,8 @@
                     "id": "d12e3020-636f-4bba-bd37-9fa233959fdb",
                     "expectedControlType": "Axis",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Thrust",
@@ -27,7 +29,8 @@
                     "id": "ea823e61-9e30-40ff-bc42-5c6a5feed6b9",
                     "expectedControlType": "Axis",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Pitch",
@@ -35,7 +38,8 @@
                     "id": "6cabece9-cb6a-45c7-a58b-228996769bfe",
                     "expectedControlType": "Axis",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Yaw",
@@ -43,7 +47,8 @@
                     "id": "18bcdfcd-d18a-49f0-8b76-45669ed93805",
                     "expectedControlType": "Axis",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Roll",
@@ -51,7 +56,8 @@
                     "id": "769d0e3e-d13d-4ed7-9bca-9850e0e93b89",
                     "expectedControlType": "Axis",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Change Camera",
@@ -59,7 +65,8 @@
                     "id": "b0acd2a4-3a95-4a8a-a8ef-9a17ec5c1793",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Target",
@@ -67,7 +74,8 @@
                     "id": "7acc2dc5-de3b-4b25-b3d3-61ce00ce6d1a",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Decouple",
@@ -75,7 +83,8 @@
                     "id": "b654c8e6-1caa-4428-890c-0ea39612a0a2",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Vjoy",
@@ -83,7 +92,8 @@
                     "id": "5116f618-8f6b-44be-9e0a-71672e08b089",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Boost",
@@ -91,7 +101,8 @@
                     "id": "2126a231-609f-4147-8247-9635210ecf06",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Shoot",
@@ -99,7 +110,8 @@
                     "id": "f4e2e7e1-bbf6-4c0e-b8c4-c22c84dd505c",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Missile",
@@ -107,7 +119,8 @@
                     "id": "7d468f19-9df3-41f8-841f-e51d79b55f66",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Mouse Position",
@@ -115,7 +128,8 @@
                     "id": "67455a36-fa56-4b42-8a96-247f270bf26f",
                     "expectedControlType": "Vector2",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Free Cam",
@@ -123,7 +137,8 @@
                     "id": "7c5ea332-fedb-46e5-9d3c-d52c00aead13",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Mouse Delta",
@@ -131,7 +146,17 @@
                     "id": "5d03c11f-a8f0-47e6-8150-42d5e0cfd5e3",
                     "expectedControlType": "Vector2",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Super Cruise",
+                    "type": "Button",
+                    "id": "e1d0f376-2805-4e03-ab74-4ba39cb324f9",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -541,6 +566,28 @@
                     "action": "Mouse Delta",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1c2b68ed-5ffb-448b-b23f-0425e80fc4e9",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "Super Cruise",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "79350106-ef5a-4a54-9ef7-04552579efe8",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Super Cruise",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -554,7 +601,8 @@
                     "id": "164c2159-4481-4b27-aa62-0f7d2af727ff",
                     "expectedControlType": "Axis",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Vertical Thrust",
@@ -562,7 +610,8 @@
                     "id": "6ab93360-9b4e-4a08-a959-f457358c96c5",
                     "expectedControlType": "Axis",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Thrust",
@@ -570,7 +619,8 @@
                     "id": "e3be1ee9-5ee6-46a1-95bb-0eddf6652af5",
                     "expectedControlType": "Axis",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Pitch",
@@ -578,7 +628,8 @@
                     "id": "5d561e1c-e22a-454f-ba7d-5670b7a10a26",
                     "expectedControlType": "Axis",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Yaw",
@@ -586,7 +637,8 @@
                     "id": "ab5d46dd-e3c1-484c-a1b7-77ed5769fe4a",
                     "expectedControlType": "Axis",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Roll",
@@ -594,7 +646,8 @@
                     "id": "672a15f9-16f1-4c2d-ad0d-595464653fbb",
                     "expectedControlType": "Axis",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Change Camera",
@@ -602,7 +655,8 @@
                     "id": "c6ff39dc-4171-4598-b288-eb156ddc24ea",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Target",
@@ -610,7 +664,8 @@
                     "id": "de7cc436-9893-4667-a041-c8887f8842f6",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Decouple",
@@ -618,7 +673,8 @@
                     "id": "3182dc40-3cd9-4028-9793-1d7e09dd8b4a",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Vjoy",
@@ -626,7 +682,8 @@
                     "id": "8c91941e-b0da-4926-a1a5-d3fe04c31eca",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Boost",
@@ -634,7 +691,8 @@
                     "id": "22cac31e-3be1-448d-acbd-7a5b5cd10afe",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Shoot",
@@ -642,7 +700,8 @@
                     "id": "da224c47-1bf6-4b5c-bdfd-e483108427ca",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Missile",
@@ -650,7 +709,8 @@
                     "id": "4472798d-c973-4d9e-a9b2-d4a031b9304f",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Mouse Position",
@@ -658,7 +718,8 @@
                     "id": "2ac04792-0469-4e82-983a-46883a91548a",
                     "expectedControlType": "Vector2",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Free Cam",
@@ -666,7 +727,8 @@
                     "id": "b85c0500-cece-4710-9a0d-a24d2d828d4c",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1100,7 +1162,8 @@
                     "id": "99512687-2591-436c-835f-ad9804d6cac1",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Mouse Position UI",
@@ -1108,7 +1171,8 @@
                     "id": "aa966ccc-d142-43c5-821f-108e17b9266b",
                     "expectedControlType": "Vector2",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Pause",
@@ -1116,7 +1180,8 @@
                     "id": "85729613-dd74-47bb-b77a-fe76b53a950d",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [

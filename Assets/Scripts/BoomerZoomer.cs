@@ -4,14 +4,6 @@ using UnityEngine;
 
 public class BoomerZoomer : ShipAI
 {
-
-    // Start is called before the first frame update
-    public override void OnStart()
-    {
-        canvas = GameObject.FindGameObjectWithTag("Canvas").transform;
-        GameObject tempObj = Instantiate(marker, canvas) as GameObject;
-        markerUI = tempObj.GetComponent<UIElementSystem>();
-    }
     public override void OnUpdate()
     {
         if (shipTarget != null)
@@ -141,13 +133,6 @@ public class BoomerZoomer : ShipAI
         movementInput = HandleCollisionDetection(movementInput);
         
         base.HandleMovement(movementInput, rotationInput, maxSpeedMultiplier);
-    }
-
-    public override void OnDeath()
-    {
-        float distanceToShipTarget = (transform.position - shipTarget.position).magnitude;
-        shipTarget.GetComponent<ShipSystem2>().OnKill(distanceToShipTarget);
-        Destroy(markerUI.gameObject);
     }
 
     void SelectTarget()
