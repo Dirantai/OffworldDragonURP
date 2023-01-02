@@ -10,8 +10,6 @@ public class PlanetInfo : MonoBehaviour
     public bool sun;
     public float planetRadius;
     public float currentDistance;
-    public float hideDistance;
-    public float farHideDistance;
     public GameObject planet;
     public Transform planetIcon;
 }

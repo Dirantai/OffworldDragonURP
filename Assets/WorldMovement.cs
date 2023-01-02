@@ -33,41 +33,50 @@ public class WorldMovement : MonoBehaviour
             HandleWarpZone(player.position.z, Vector3.forward);
         }
     }
-
+    float closeRadius = 0;
     void HandleDistantObjects(){
         
         foreach(PlanetInfo wObject in worldObjects){
             Vector3 playerToObject = wObject.transform.position - Camera.main.transform.position;
-            float parentDistance = 0;
+            float parentDistance = 4000;
             float distance = playerToObject.magnitude;
+            float fakeDistance = wObject.currentDistance;
+
+
             if (wObject.parentBody == null){
                 wObject.currentDistance = 4000;
             }else{
                 parentDistance = (wObject.parentBody.transform.position - Camera.main.transform.position).magnitude;
             }
 
-            if(distance > wObject.farHideDistance){
+            if(distance > 5000){
                 wObject.planet.SetActive(false);
             }else{
                 wObject.planet.SetActive(true);
             }
             MaterialPropertyBlock newMat = new MaterialPropertyBlock();
             Color originalColour = wObject.planetIcon.GetComponentInChildren<Renderer>().material.GetColor("_Color");
-            newMat.SetColor("_Color", new Color(originalColour.r, originalColour.g, originalColour.b, 1 - SmoothStep(wObject.hideDistance, wObject.farHideDistance, distance)));
+            
             wObject.planetIcon.GetComponentInChildren<Renderer>().SetPropertyBlock(newMat);
-            if(distance < wObject.hideDistance){
+            if(distance < wObject.currentDistance - 100){
                 wObject.planetIcon.gameObject.SetActive(false);
             }else{
                 wObject.planetIcon.gameObject.SetActive(true);
                 if(wObject.parentBody != null){
                     if(parentDistance > distance){
-                        wObject.currentDistance = wObject.parentBody.currentDistance - 500;
+                        wObject.currentDistance = wObject.parentBody.currentDistance - (10 + closeRadius);
                     }else{
-                        wObject.currentDistance = wObject.parentBody.currentDistance + 500;
+                        wObject.currentDistance = wObject.parentBody.currentDistance + (10 + closeRadius);
                     }
                 }
-                wObject.planetIcon.position = Camera.main.transform.position + (playerToObject.normalized * wObject.currentDistance);
-                float closeRadius = (wObject.planetRadius * wObject.currentDistance) / distance;
+               
+                if(distance < wObject.currentDistance){
+                    fakeDistance = distance - 100;
+                }
+                closeRadius = (wObject.planetRadius * fakeDistance) / distance;
+                wObject.planetIcon.position = Camera.main.transform.position + (playerToObject.normalized * fakeDistance);
+
+                newMat.SetColor("_Color", new Color(originalColour.r, originalColour.g, originalColour.b, 1 - SmoothStep(4500, 5000, distance)));
                 float scale = 1000 * (closeRadius / wObject.planetRadius);
                 wObject.planetIcon.localScale = new Vector3(scale, scale, scale);
             }
