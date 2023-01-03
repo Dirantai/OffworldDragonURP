@@ -42,7 +42,6 @@ public class WorldMovement : MonoBehaviour
             float distance = playerToObject.magnitude;
             float fakeDistance = wObject.currentDistance;
 
-
             if (wObject.parentBody == null){
                 wObject.currentDistance = 4000;
             }else{
@@ -64,7 +63,7 @@ public class WorldMovement : MonoBehaviour
                 wObject.planetIcon.gameObject.SetActive(true);
                 if(wObject.parentBody != null){
                     if(parentDistance > distance){
-                        wObject.currentDistance = wObject.parentBody.currentDistance - (10 + closeRadius);
+                        wObject.currentDistance = wObject.parentBody.currentDistance - 100;
                     }else{
                         wObject.currentDistance = wObject.parentBody.currentDistance + (10 + closeRadius);
                     }
