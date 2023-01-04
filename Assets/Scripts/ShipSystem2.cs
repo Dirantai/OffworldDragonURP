@@ -29,6 +29,7 @@ public class ShipSystem2 : BasicForceSystem
         public float boostRechargeSpeed;
     }
     
+    public float landingHeight;
     public float currentShieldHealth;
     public float currentHullHealth;
     public bool active;
@@ -40,6 +41,7 @@ public class ShipSystem2 : BasicForceSystem
 
     private float gravity;
     private Transform orbittingBody;
+    private Transform landingPad;
     private float boostPenalty;
     private float currentRegenTime;
     private float collisionTimer;
@@ -62,6 +64,10 @@ public class ShipSystem2 : BasicForceSystem
 
     public void SetTracker(bool boolean){
         splashTracker = boolean;
+    }
+
+    public void SetLandingPoint(Transform point){
+        landingPad = point;
     }
 
     float MouseLookSystem(float mouseInputAxis, int maxValue, float deadzone)
@@ -161,8 +167,56 @@ public class ShipSystem2 : BasicForceSystem
         else
         {
             inputs?.actionMaps[0].Disable();
+            inputs?.actionMaps[0].FindAction("Land").Enable();
             HandleMovement(Vector3.zero, Vector3.zero, 1);
+
+            if(landingPad != null){
+                
+                Vector3 newPos = landingPad.position + landingPad.up * landingHeight;
+
+                float distanceToPad = (landingPad.position - transform.position).magnitude;
+                if(distanceToPad < 0.01f + landingHeight){
+                    shipRigid.constraints = RigidbodyConstraints.FreezeAll;
+                    transform.position = Vector3.Lerp(transform.position, newPos, 3 * Time.deltaTime);
+                    transform.rotation = Quaternion.Lerp(transform.rotation, landingPad.rotation, 3 * Time.deltaTime);
+                }else{
+                    Vector3 aimPos = landingPad.position + (landingPad.forward * 100);
+                    Vector3 landAim = LandAim(newPos + (landingPad.up * 100));
+                    Vector3 yawAim = AimAtTarget(newPos, aimPos, false);
+                    Vector3 newRot = new Vector3(landAim.x, landAim.y, yawAim.z);
+                    HandleMovement(MoveToTarget (newPos), AimAtTarget(newPos, aimPos, false), 0.05f);
+                    if (visuals) HandleVisuals(Vector3.zero);
+                }
+            }
         }
+    }
+
+    public Vector3 LandAim(Vector3 target)
+    {
+        float verticalProduct = Vector3.Dot(-transform.up, (target - transform.position).normalized);
+        float rollProduct = Vector3.Dot(transform.right, (target - transform.position).normalized);
+        return new Vector3(Mathf.Clamp(rollProduct, -1, 1), Mathf.Clamp(verticalProduct, -1, 1), 0);
+    }
+
+    public Vector3 AimAtTarget(Vector3 trueMovementTarget, Vector3 target, bool roll)
+    {
+        float horizontalProduct = Vector3.Dot(transform.right, (target - transform.position).normalized);
+        float verticalProduct = Vector3.Dot(-transform.up, (target - transform.position).normalized);
+        float rollProduct = 0;
+        if (roll)
+        {
+            rollProduct = Vector3.Dot(-transform.right, trueMovementTarget - transform.position);
+        }
+        return new Vector3(Mathf.Clamp(rollProduct, -1, 1), Mathf.Clamp(verticalProduct, -1, 1), Mathf.Clamp(horizontalProduct, -1, 1));
+    }
+
+    public Vector3 MoveToTarget(Vector3 trueMovementTarget)
+    {
+        float horizontalProduct = Vector3.Dot(transform.right, (trueMovementTarget - transform.position));
+        float verticalProduct = Vector3.Dot(transform.up, (trueMovementTarget - transform.position));
+        float forwardProduct = Vector3.Dot(transform.forward, (trueMovementTarget - transform.position));
+
+        return new Vector3(Mathf.Clamp(forwardProduct, -1, 1), Mathf.Clamp(horizontalProduct, -1, 1), Mathf.Clamp(verticalProduct, -1, 1));
     }
 
     void ShieldRegen()
@@ -205,6 +259,17 @@ public class ShipSystem2 : BasicForceSystem
             }
         }else{
            cruiseTimer = 0; 
+        }
+
+        if(inputs["Land"].triggered && landingPad != null){
+            Debug.Log("attempt");
+            float distanceToPad = (landingPad.position - transform.position).magnitude;
+            if(distanceToPad < 10){
+                if(!active){
+                    shipRigid.constraints = RigidbodyConstraints.FreezeRotation;    
+                }
+                active = !active;
+            }
         }
 
         if(currentBoost < 100){

@@ -178,27 +178,6 @@ public class AITest : ShipSystem2
 
     }
 
-    Vector3 AimAtTarget(Vector3 trueMovementTarget, Vector3 target, bool roll)
-    {
-        float horizontalProduct = Vector3.Dot(transform.right, (target - transform.position).normalized);
-        float verticalProduct = Vector3.Dot(-transform.up, (target - transform.position).normalized);
-        float rollProduct = 0;
-        if (roll)
-        {
-            rollProduct = Vector3.Dot(-transform.right, trueMovementTarget - transform.position);
-        }
-        return new Vector3(Mathf.Clamp(rollProduct, -1, 1), Mathf.Clamp(verticalProduct, -1, 1), Mathf.Clamp(horizontalProduct, -1, 1));
-    }
-
-    Vector3 MoveToTarget(Vector3 trueMovementTarget)
-    {
-        float horizontalProduct = Vector3.Dot(transform.right, trueMovementTarget - transform.position);
-        float verticalProduct = Vector3.Dot(transform.up, trueMovementTarget - transform.position);
-        float forwardProduct = Vector3.Dot(transform.forward, trueMovementTarget - transform.position);
-
-        return new Vector3(Mathf.Clamp(forwardProduct, -1, 1), Mathf.Clamp(horizontalProduct, -1, 1), Mathf.Clamp(verticalProduct, -1, 1));
-    }
-
     Vector3 StrafeTarget()
     {
         Vector3 randomPosition = new Vector3(Random.Range(-30f, 30f), Random.Range(-30f, 30f), Random.Range(-30f, 30f));
