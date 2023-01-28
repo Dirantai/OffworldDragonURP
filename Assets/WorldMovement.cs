@@ -38,46 +38,48 @@ public class WorldMovement : MonoBehaviour
         
         foreach(PlanetInfo wObject in worldObjects){
             Vector3 playerToObject = wObject.transform.position - Camera.main.transform.position;
-            float parentDistance = 4000;
+            float parentDistance = 2000;
             float distance = playerToObject.magnitude;
             float fakeDistance = wObject.currentDistance;
 
             if (wObject.parentBody == null){
-                wObject.currentDistance = 4000;
+                wObject.currentDistance = 2000;
             }else{
                 parentDistance = (wObject.parentBody.transform.position - Camera.main.transform.position).magnitude;
             }
 
-            if(distance > 5500){
-                wObject.planet.SetActive(false);
-            }else{
-                wObject.planet.SetActive(true);
-            }
             MaterialPropertyBlock newMat = new MaterialPropertyBlock();
             Color originalColour = wObject.planetIcon.GetComponentInChildren<Renderer>().material.GetColor("_Color");
-            newMat.SetColor("_Color", new Color(originalColour.r, originalColour.g, originalColour.b, 1 - SmoothStep(4500, 5000, distance)));
+            newMat.SetColor("_Color", new Color(originalColour.r, originalColour.g, originalColour.b, 1 - SmoothStep(2400, 2490, distance)));
             wObject.planetIcon.GetComponentInChildren<Renderer>().SetPropertyBlock(newMat);
-            if(distance < wObject.hideDistance){
-                wObject.planetIcon.gameObject.SetActive(false);
-            }else{
-                wObject.planetIcon.gameObject.SetActive(true);
-                if(wObject.parentBody != null){
-                    if(parentDistance > distance){
-                        wObject.currentDistance = wObject.parentBody.currentDistance - 100;
-                    }else{
-                        wObject.currentDistance = wObject.parentBody.currentDistance + (10 + closeRadius);
-                    }
-                }
-               
-                if(distance < wObject.currentDistance){
-                    fakeDistance = distance - 100;
-                }
-                closeRadius = (wObject.planetRadius * fakeDistance) / distance;
-                wObject.planetIcon.position = Camera.main.transform.position + (playerToObject.normalized * fakeDistance);
 
-                float scale = 1000 * (closeRadius / wObject.planetRadius);
-                wObject.planetIcon.localScale = new Vector3(scale, scale, scale);
+            if(distance > 2000){
+                wObject.planetIcon.gameObject.SetActive(true);
+                if(distance > 2500){
+                    wObject.planetIcon.gameObject.layer = LayerMask.NameToLayer("WorldIcon");
+                    wObject.planet.SetActive(false);
+                }else{
+                    fakeDistance = distance - 100;
+                    wObject.planetIcon.gameObject.layer = LayerMask.NameToLayer("Default");
+                    wObject.planet.SetActive(true);
+                }
+            }else{
+                wObject.planetIcon.gameObject.SetActive(false);
             }
+
+            if(wObject.parentBody != null){
+                if(parentDistance > distance){
+                    wObject.currentDistance = wObject.parentBody.currentDistance - 100;
+                }else{
+                    wObject.currentDistance = wObject.parentBody.currentDistance + (10 + closeRadius);
+                }
+            }
+            
+            closeRadius = (wObject.planetRadius * fakeDistance) / distance;
+            wObject.planetIcon.position = Camera.main.transform.position + (playerToObject.normalized * fakeDistance);
+
+            float scale = 1000 * (closeRadius / wObject.planetRadius);
+            wObject.planetIcon.localScale = new Vector3(scale, scale, scale);
         }
     }
 
@@ -102,9 +104,7 @@ public class WorldMovement : MonoBehaviour
             for (int o = 0; o < transform.childCount; o++){
                 transform.GetChild(o).position += direction * -distance;
             }
-        }
-
-        if(Mathf.Abs(distance) < cellSize){
+        }else if(Mathf.Abs(distance) < cellSize){
             done = false;
         }
     }
