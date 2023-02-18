@@ -12,6 +12,8 @@ public class FadeSystem : MonoBehaviour
     void Start()
     {
         fade = GetComponent<Image>();
+        Color fadeColour = new Color(0, 0, 0, 1);
+        fade.color = fadeColour;
         timer = fadeDuration + 0.5f;
     }
 

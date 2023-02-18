@@ -8,7 +8,7 @@ public class BasicForceSystem : MonoBehaviour
     public bool decoupled;
 
     [System.Serializable]
-    public class MovementValues
+    public struct MovementValues
     {
 
         public Vector3 maxSpeedVector;

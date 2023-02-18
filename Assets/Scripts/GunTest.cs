@@ -10,6 +10,14 @@ public class GunTest : MonoBehaviour
     public Transform cursorUI;
     private ShipSystem2 player;
     public float speedMultiplier;
+    public bool autoFire;
+    public float rechargeRate;
+    public float energyCost;
+    public float energyPrevious;
+    public float energyCurrent;
+    public float rechargeDelay;
+    public int rechargeCount;
+    private bool recharging;
 
     // Start is called before the first frame update
     void Start()
@@ -38,6 +46,28 @@ public class GunTest : MonoBehaviour
         if (!AI)
         {
             HandleEnemySelection();
+            if(recharging){
+                Shoot = false;
+                float newEnergy = Mathf.Clamp((energyPrevious + ((100 / 3) * rechargeCount)), 0, 100);
+                if(energyCurrent < newEnergy){
+                    energyCurrent += Time.deltaTime * rechargeRate;
+                }else{
+                    energyCurrent = newEnergy;
+                    recharging = false;
+                    energyPrevious = 0;
+                    rechargeCount = 0;
+                }
+
+                if(player.inputs["Shoot"].WasPressedThisFrame() && rechargeCount < 3){
+                    recharging = true;
+                    rechargeCount++;
+                }
+            }else if(player.inputs["Shoot"].WasPressedThisFrame() && !recharging){
+                    energyPrevious = energyCurrent;
+                    energyCurrent -= rechargeRate * rechargeDelay;
+                    recharging = true;
+                    rechargeCount = 1;
+            }
         }
         else
         {
@@ -74,6 +104,18 @@ public class GunTest : MonoBehaviour
         }
     }
 
+    public bool UpdateUI(){
+        return energyCurrent < energyPrevious ? false : true;
+    }
+
+    public float GetCurrentEnergy(){
+        return energyCurrent;
+    }
+
+    public float GetNewEnergy(){
+        return Mathf.Clamp((energyPrevious + ((100 / 3) * rechargeCount)), 0, 100);
+    }
+
     Vector3 AimingSystem(float bulletSpeed, Turret turret, UIElementSystem aimReticle)
     {
         Vector3 interceptPoint = Intercept(bulletSpeed);
@@ -103,7 +145,9 @@ public class GunTest : MonoBehaviour
             {
                 if (screenAimToIntercept.magnitude < 100)
                 {
-                    Shoot = true;
+                    if(autoFire && !recharging){
+                        Shoot = true;
+                    }
                     trueAimPoint = aimpointToIntercept / (200 / (screenAimToIntercept.magnitude)) + interceptPoint;
                     if(screenAimToIntercept.magnitude < 25)
                     {
@@ -112,7 +156,11 @@ public class GunTest : MonoBehaviour
                 }
                 else
                 {
-                    if(player.inputs["Shoot"].ReadValue<float>() == 0) Shoot = false;
+                    if(!autoFire){
+                        if(player.inputs["Shoot"].ReadValue<float>() == 0) Shoot = false;
+                    }else{
+                        Shoot = false;
+                    }
                     trueAimPoint = aimPoint;
                 }
             }
@@ -128,7 +176,11 @@ public class GunTest : MonoBehaviour
         }
         else
         {
-            if(player.inputs["Shoot"].ReadValue<float>() == 0) Shoot = false;
+            if(!autoFire){
+                if(player.inputs["Shoot"].ReadValue<float>() == 0) Shoot = false;
+            }else{
+                Shoot = false;
+            }
             turret.HandleUI(100);
 
             Vector3 trueAimPoint = reticleRay.origin + (reticleRay.direction * 100);
@@ -165,7 +217,7 @@ public class GunTest : MonoBehaviour
                 }
             }
             turret.TurretTurn(aimPoint, turret.weaponValues.turnSpeed);
-            if (!AI)
+            if (!AI && !autoFire)
             {
                 if(deltaInput < player.inputs["Shoot"].ReadValue<float>()){
                     deltaInput = player.inputs["Shoot"].ReadValue<float>();
@@ -201,8 +253,9 @@ public class GunTest : MonoBehaviour
 
     public void GunShoot(Turret.WeaponValues weaponValues, bool shoot)
     {
-        if (shoot && weaponValues.loaded)
+        if (shoot && weaponValues.loaded && energyCurrent > 0)
         {
+            energyCurrent -= energyCost;
             player.soundSystem?.SetPitch(0.8f, "Shoot");
             player.soundSystem.PlaySounds("Shoot", 0.1f);
             weaponValues.loaded = false;
@@ -213,6 +266,11 @@ public class GunTest : MonoBehaviour
             instancedBullet.GetComponent<Bullet>().HitMarkerDetector = weaponValues.hitMarker;
             instancedBullet.GetComponent<Bullet>().shooter = player;
             instancedBullet.transform.rotation = Quaternion.LookRotation(CalculateSpreadVector(weaponValues)); //apply the spread
+        }else if(energyCurrent <= 0 && !recharging){
+            energyPrevious = 0;
+            recharging = true;
+            rechargeCount = 3;
+            energyCurrent -= 10 * rechargeDelay * 1.5f;
         }
     }
 

@@ -20,7 +20,7 @@ public class ShipSystem2 : BasicForceSystem
     public MovementValues shipRotationalValues;
 
     [System.Serializable]
-    public class ShipStats
+    public struct ShipStats
     {
         public float shieldGrade;
         public float hullGrade;
@@ -138,6 +138,7 @@ public class ShipSystem2 : BasicForceSystem
 
     void FixedUpdate()
     {
+        Vector3 rotationInput = Vector3.zero;
         if (active)
         {
             inputs?.actionMaps[0].Enable();
@@ -149,7 +150,7 @@ public class ShipSystem2 : BasicForceSystem
                 Destroy(gameObject);
             }
             Vector3 movementInput = Vector3.zero;
-            Vector3 rotationInput = Vector3.zero;
+            rotationInput = Vector3.zero;
 
             if(inputs != null){
                 movementInput = new Vector3(inputs["Thrust"].ReadValue<float>(), inputs["Lateral Thrust"].ReadValue<float>(), inputs["Vertical Thrust"].ReadValue<float>());
@@ -162,7 +163,6 @@ public class ShipSystem2 : BasicForceSystem
             }
 
             HandleMovement(movementInput, rotationInput, 1);
-            if (visuals) HandleVisuals(rotationInput);
         }
         else
         {
@@ -189,6 +189,7 @@ public class ShipSystem2 : BasicForceSystem
                 }
             }
         }
+        if (visuals) HandleVisuals(rotationInput);
     }
 
     public Vector3 LandAim(Vector3 target)

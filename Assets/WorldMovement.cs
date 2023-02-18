@@ -5,6 +5,7 @@ using UnityEngine;
 public class WorldMovement : MonoBehaviour
 {
     private Transform player;
+    public Transform startingPoint;
     public UIElementHandler uiHandler;
 
     private bool done;
@@ -17,6 +18,7 @@ public class WorldMovement : MonoBehaviour
 
     void Start(){
         player = GameObject.FindGameObjectWithTag("Player").transform;
+        player.position = startingPoint.position;
         worldObjects = GameObject.FindObjectsOfType<PlanetInfo>();
         foreach(PlanetInfo wObject in worldObjects){
             if(wObject.sun) sun = wObject;
