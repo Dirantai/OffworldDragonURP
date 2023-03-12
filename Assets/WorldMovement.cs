@@ -40,12 +40,12 @@ public class WorldMovement : MonoBehaviour
         
         foreach(PlanetInfo wObject in worldObjects){
             Vector3 playerToObject = wObject.transform.position - Camera.main.transform.position;
-            float parentDistance = 2000;
+            float parentDistance = 50;
             float distance = playerToObject.magnitude;
             float fakeDistance = wObject.currentDistance;
 
             if (wObject.parentBody == null){
-                wObject.currentDistance = 2000;
+                wObject.currentDistance = 50;
             }else{
                 parentDistance = (wObject.parentBody.transform.position - Camera.main.transform.position).magnitude;
             }
@@ -55,7 +55,7 @@ public class WorldMovement : MonoBehaviour
             newMat.SetColor("_Color", new Color(originalColour.r, originalColour.g, originalColour.b, 1 - SmoothStep(2400, 2490, distance)));
             wObject.planetIcon.GetComponentInChildren<Renderer>().SetPropertyBlock(newMat);
 
-            if(distance > 2000){
+            if(distance > 2400){
                 wObject.planetIcon.gameObject.SetActive(true);
                 if(distance > 2500){
                     wObject.planetIcon.gameObject.layer = LayerMask.NameToLayer("WorldIcon");
@@ -71,7 +71,7 @@ public class WorldMovement : MonoBehaviour
 
             if(wObject.parentBody != null){
                 if(parentDistance > distance){
-                    wObject.currentDistance = wObject.parentBody.currentDistance - 100;
+                    wObject.currentDistance = wObject.parentBody.currentDistance - 10;
                 }else{
                     wObject.currentDistance = wObject.parentBody.currentDistance + (10 + closeRadius);
                 }
