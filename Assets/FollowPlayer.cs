@@ -6,6 +6,7 @@ public class FollowPlayer : MonoBehaviour
 {
     public Transform player;
     public Transform skyCamera;
+    public Transform playerCam;
 
     // Update is called once per frame
     void Update()
@@ -15,7 +16,10 @@ public class FollowPlayer : MonoBehaviour
 
     public virtual void OnUpdate(){
         if(player != null){
-            skyCamera.rotation = player.rotation;
+            transform.position = player.position;
+        }
+        if(skyCamera != null && playerCam != null){
+            skyCamera.rotation = playerCam.rotation;
         }
     }
 }
