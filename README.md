@@ -11,7 +11,6 @@ things you have ever witnessed as a programmer
 This ReadMe will be updated once I have something better to write, but for now, enjoy it.
 
 Things I need to research and/or add:
-- Kepler orbits
 - More enemy/friendly AI types
 - Docking
 - Ship customisation
