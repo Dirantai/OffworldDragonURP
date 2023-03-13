@@ -52,12 +52,12 @@ public class WorldMovement : MonoBehaviour
 
             MaterialPropertyBlock newMat = new MaterialPropertyBlock();
             Color originalColour = wObject.planetIcon.GetComponentInChildren<Renderer>().material.GetColor("_Color");
-            newMat.SetColor("_Color", new Color(originalColour.r, originalColour.g, originalColour.b, 1 - SmoothStep(2400, 2490, distance)));
+            newMat.SetColor("_Color", new Color(originalColour.r, originalColour.g, originalColour.b, 1 - SmoothStep(wObject.hideDistance, wObject.hideDistance + 90, distance)));
             wObject.planetIcon.GetComponentInChildren<Renderer>().SetPropertyBlock(newMat);
 
-            if(distance > 2400){
+            if(distance > wObject.hideDistance){
                 wObject.planetIcon.gameObject.SetActive(true);
-                if(distance > 2500){
+                if(distance > wObject.hideDistance + 100){
                     wObject.planetIcon.gameObject.layer = LayerMask.NameToLayer("WorldIcon");
                     wObject.planet.SetActive(false);
                 }else{
@@ -81,7 +81,7 @@ public class WorldMovement : MonoBehaviour
             wObject.planetIcon.position = Camera.main.transform.position + (playerToObject.normalized * fakeDistance);
 
             float scale = 1000 * (closeRadius / wObject.planetRadius);
-            wObject.planetIcon.localScale = new Vector3(scale, scale, scale);
+            wObject.planetIcon.localScale = new Vector3(scale, scale, scale) * wObject.planetScale;
         }
     }
 
