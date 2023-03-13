@@ -8,6 +8,8 @@ public class WorldMovement : MonoBehaviour
     public Transform startingPoint;
     public UIElementHandler uiHandler;
 
+    public Transform overlayCam;
+
     private bool done;
 
     public PlanetInfo[] worldObjects;
@@ -39,7 +41,7 @@ public class WorldMovement : MonoBehaviour
     void HandleDistantObjects(){
         
         foreach(PlanetInfo wObject in worldObjects){
-            Vector3 playerToObject = wObject.transform.position - Camera.main.transform.position;
+            Vector3 playerToObject = wObject.transform.position - overlayCam.position;
             float parentDistance = 50;
             float distance = playerToObject.magnitude;
             float fakeDistance = wObject.currentDistance;
@@ -47,27 +49,13 @@ public class WorldMovement : MonoBehaviour
             if (wObject.parentBody == null){
                 wObject.currentDistance = 50;
             }else{
-                parentDistance = (wObject.parentBody.transform.position - Camera.main.transform.position).magnitude;
+                parentDistance = (wObject.parentBody.transform.position - overlayCam.position).magnitude;
             }
 
             MaterialPropertyBlock newMat = new MaterialPropertyBlock();
             Color originalColour = wObject.planetIcon.GetComponentInChildren<Renderer>().material.GetColor("_Color");
-            newMat.SetColor("_Color", new Color(originalColour.r, originalColour.g, originalColour.b, 1 - SmoothStep(wObject.hideDistance, wObject.hideDistance + 90, distance)));
+            newMat.SetColor("_Color", new Color(originalColour.r, originalColour.g, originalColour.b, 1 - SmoothStep(wObject.hideDistance, wObject.hideDistance + 400, distance)));
             wObject.planetIcon.GetComponentInChildren<Renderer>().SetPropertyBlock(newMat);
-
-            if(distance > wObject.hideDistance){
-                wObject.planetIcon.gameObject.SetActive(true);
-                if(distance > wObject.hideDistance + 100){
-                    wObject.planetIcon.gameObject.layer = LayerMask.NameToLayer("WorldIcon");
-                    wObject.planet.SetActive(false);
-                }else{
-                    fakeDistance = distance - 100;
-                    wObject.planetIcon.gameObject.layer = LayerMask.NameToLayer("Default");
-                    wObject.planet.SetActive(true);
-                }
-            }else{
-                wObject.planetIcon.gameObject.SetActive(false);
-            }
 
             if(wObject.parentBody != null){
                 if(parentDistance > distance){
@@ -76,9 +64,24 @@ public class WorldMovement : MonoBehaviour
                     wObject.currentDistance = wObject.parentBody.currentDistance + (10 + closeRadius);
                 }
             }
-            
+
+            wObject.planetIcon.position = overlayCam.position + (playerToObject.normalized * fakeDistance);
             closeRadius = (wObject.planetRadius * fakeDistance) / distance;
-            wObject.planetIcon.position = Camera.main.transform.position + (playerToObject.normalized * fakeDistance);
+
+            if(distance > wObject.hideDistance){
+                wObject.planetIcon.gameObject.SetActive(true);
+                if(distance > wObject.hideDistance + 500){
+                    wObject.planetIcon.gameObject.layer = LayerMask.NameToLayer("WorldIcon");
+                    wObject.planet.SetActive(false);
+                }else{
+                    fakeDistance = distance - 100;
+                    wObject.planetIcon.gameObject.layer = LayerMask.NameToLayer("Default");
+                    
+                    wObject.planet.SetActive(true);
+                }
+            }else{
+                wObject.planetIcon.gameObject.SetActive(false);
+            }
 
             float scale = 1000 * (closeRadius / wObject.planetRadius);
             if (wObject.planetScale == 0) wObject.planetScale = 1;

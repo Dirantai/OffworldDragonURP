@@ -5,6 +5,7 @@ using UnityEngine;
 public class FollowPlayer : MonoBehaviour
 {
     public Transform player;
+    public Transform skyCamera;
 
     // Update is called once per frame
     void Update()
@@ -14,7 +15,7 @@ public class FollowPlayer : MonoBehaviour
 
     public virtual void OnUpdate(){
         if(player != null){
-            transform.position = player.position;
+            skyCamera.rotation = player.rotation;
         }
     }
 }

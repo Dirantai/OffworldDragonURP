@@ -6,8 +6,7 @@ public class OrbitSV : MonoBehaviour
 {
     public Transform player;
     //public Transform planetVelocity;
-    public SimpleKeplerOrbits.KeplerOrbitMover orbitData;
-    public float angularSpeed;
+    public SimplifiedOrbitSystem orbitData;
     public float SOF = 2500;
 
     // Update is called once per frame
@@ -37,26 +36,21 @@ public class OrbitSV : MonoBehaviour
             //Vector3 pVelocity = planetVelocity.position - transform.position;
 
             Vector3 radiusVector = player.position - axisPosition;
-            float radiansSpeed = angularSpeed * Time.deltaTime * Mathf.Deg2Rad;
+            float radiansSpeed = orbitData.angularSpeed * Time.deltaTime * Mathf.Deg2Rad;
             float linearSpeed = radiansSpeed * radiusVector.magnitude;
 
             //Since the player is never at the exact orbit distance as the planet, we need to calculate the player's orbital velocity from the planet's orbital velocity
-            Vector3 planetVelocity = new Vector3((float)orbitData.OrbitData.Velocity.x, (float)orbitData.OrbitData.Velocity.y, (float)orbitData.OrbitData.Velocity.z);
-            float planetDistance = (transform.position - orbitData.AttractorSettings.AttractorObject.position).magnitude;
-            float attractorToPlayer = (player.position - orbitData.AttractorSettings.AttractorObject.position).magnitude;
-            float planetAngular = planetVelocity.magnitude / planetDistance;
-            Vector3 playerVector = planetVelocity.normalized * (planetAngular * attractorToPlayer) * Time.deltaTime;
+            float attractorToPlayer = (player.position - orbitData.attractorObject.position).magnitude;
+            float orbitSpeed = orbitData.orbitAngularSpeed * Time.deltaTime * Mathf.Deg2Rad;
+            Vector3 playerVector = -orbitData.orbitVector * (orbitSpeed * attractorToPlayer);
 
             //Calculate the final vector
-            Vector3 finalVector = ((playerVector * orbitData.TimeScale) + (crossProd.normalized * linearSpeed * mult));
+            Vector3 finalVector = playerVector + (crossProd.normalized * linearSpeed * mult);
 
             //Apply the position appropriately
             player.position += finalVector;
             //Rotate the player relative to the planet instead.
-            player.Rotate(transform.up * angularSpeed * Time.deltaTime);
+            player.Rotate(transform.up * orbitData.angularSpeed * Time.deltaTime);
         }
-
-        Vector3 rotation = new Vector3(0, angularSpeed, 0);
-        transform.Rotate(rotation * Time.deltaTime);
     }
 }
