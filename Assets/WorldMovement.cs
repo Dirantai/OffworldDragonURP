@@ -81,6 +81,7 @@ public class WorldMovement : MonoBehaviour
             wObject.planetIcon.position = Camera.main.transform.position + (playerToObject.normalized * fakeDistance);
 
             float scale = 1000 * (closeRadius / wObject.planetRadius);
+            if (wObject.planetScale == 0) wObject.planetScale = 1;
             wObject.planetIcon.localScale = new Vector3(scale, scale, scale) * wObject.planetScale;
         }
     }
