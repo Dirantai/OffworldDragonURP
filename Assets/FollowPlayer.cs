@@ -9,7 +9,7 @@ public class FollowPlayer : MonoBehaviour
     public Transform playerCam;
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         OnUpdate();
     }

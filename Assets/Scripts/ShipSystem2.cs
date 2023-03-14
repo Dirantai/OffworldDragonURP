@@ -53,6 +53,8 @@ public class ShipSystem2 : BasicForceSystem
     public InputActionAsset inputs;
     public LayerMask layerMask;
 
+    public Vector3 movementInput;
+
     public void SetOrbittingBody(Transform body, float g){
         orbittingBody = body;
         gravity = g;
@@ -149,7 +151,6 @@ public class ShipSystem2 : BasicForceSystem
                 g.transform.parent = transform.parent;
                 Destroy(gameObject);
             }
-            Vector3 movementInput = Vector3.zero;
             rotationInput = Vector3.zero;
 
             if(inputs != null){
@@ -160,6 +161,8 @@ public class ShipSystem2 : BasicForceSystem
                     rotationInput = new Vector3(inputs["Roll"].ReadValue<float>(), -(inputs["Pitch"].ReadValue<float>() + fakeDelta.y), inputs["Yaw"].ReadValue<float>() + fakeDelta.x);
                     
                 }
+            }else{
+                movementInput = Vector3.zero;
             }
 
             HandleMovement(movementInput, rotationInput, 1);

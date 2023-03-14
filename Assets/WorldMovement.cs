@@ -31,11 +31,14 @@ public class WorldMovement : MonoBehaviour
     void Update()
     {
         if(player != null){
-            HandleDistantObjects();
             HandleWarpZone(player.position.x, Vector3.right);
             HandleWarpZone(player.position.y, Vector3.up);
             HandleWarpZone(player.position.z, Vector3.forward);
         }
+    }
+
+    void LateUpdate(){
+            HandleDistantObjects();
     }
     float closeRadius = 0;
     void HandleDistantObjects(){

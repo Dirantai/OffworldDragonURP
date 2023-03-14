@@ -1,14 +1,14 @@
 using System;
+using UnityEngine;
 
-namespace SimpleKeplerOrbits
-{
-	[System.Serializable]
+[System.Serializable]
 	public struct Vector3d
 	{
 		public double x;
 		public double y;
 		public double z;
 		private const double EPSILON = 1.401298E-45;
+		public const double Deg2Rad = 0.017453292519943d;
 
 		public Vector3d normalized
 		{
@@ -47,6 +47,13 @@ namespace SimpleKeplerOrbits
 			this.x = x;
 			this.y = y;
 			this.z = z;
+		}
+
+		public Vector3d(Vector3 position)
+		{
+			this.x = position.x;
+			this.y = position.y;
+			this.z = position.z;
 		}
 
 		public Vector3d(double x, double y)
@@ -233,6 +240,10 @@ namespace SimpleKeplerOrbits
 			return Math.Sqrt(vector3d.x * vector3d.x + vector3d.y * vector3d.y + vector3d.z * vector3d.z);
 		}
 
+		public Vector3 toFloat(){
+			return new Vector3((float)this.x, (float)this.y, (float)this.z);
+		}
+
 		public static Vector3d ClampMagnitude(Vector3d vector, double maxLength)
 		{
 			if (vector.sqrMagnitude > maxLength * maxLength)
@@ -271,4 +282,3 @@ namespace SimpleKeplerOrbits
 			return new Vector3d(Math.Max(a.x, b.x), Math.Max(a.y, b.y), Math.Max(a.z, b.z));
 		}
 	}
-}
