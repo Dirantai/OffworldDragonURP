@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class shipUI : MonoBehaviour
 {
@@ -10,6 +11,9 @@ public class shipUI : MonoBehaviour
     public Transform shieldBar;
     public Transform energyBar;
     public Transform nEnergyBar;
+
+    Vector3 startPosShield;
+    Vector3 startPosHealth;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,10 +30,8 @@ public class shipUI : MonoBehaviour
         healthBar.localPosition = new Vector3(healthBar.localPosition.x, -160 *  ((100 - controller.GetHealth()) / 100), 0);
         shieldBar.localPosition = new Vector3(shieldBar.localPosition.x, -160 * ((100 - controller.GetShield()) / 100), 0);
         if(gunSystem.UpdateUI()){
-            energyBar.localScale = new Vector3(0.5f, 0.5f * gunSystem.GetCurrentEnergy() / 100, 1);
-            energyBar.localPosition = new Vector3(energyBar.localPosition.x, -160 * ((100 - gunSystem.GetCurrentEnergy()) / 100), 0);
+            energyBar.GetComponent<Image>().fillAmount = 0.5f * (gunSystem.GetCurrentEnergy() / 100);
         }
-        nEnergyBar.localScale = new Vector3(0.5f, 0.5f * gunSystem.GetNewEnergy() / 100, 1);
-        nEnergyBar.localPosition = new Vector3(energyBar.localPosition.x, -160 * ((100 - gunSystem.GetNewEnergy()) / 100), 0);
+        nEnergyBar.GetComponent<Image>().fillAmount = 0.5f * (gunSystem.GetNewEnergy() / 100);
     }
 }

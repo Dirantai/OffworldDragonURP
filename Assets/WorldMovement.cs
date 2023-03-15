@@ -68,7 +68,9 @@ public class WorldMovement : MonoBehaviour
                 }
             }
 
+
             wObject.planetIcon.position = overlayCam.position + (playerToObject.normalized * fakeDistance);
+
             closeRadius = (wObject.planetRadius * fakeDistance) / distance;
 
             if(distance > wObject.hideDistance){
@@ -112,6 +114,7 @@ public class WorldMovement : MonoBehaviour
             uiHandler.MoveElements(direction * -distance);
             for (int o = 0; o < transform.childCount; o++){
                 transform.GetChild(o).position += direction * -distance;
+                SimplifiedOrbitSystem orbitData = transform.GetChild(o).GetComponent<SimplifiedOrbitSystem>();
             }
         }else if(Mathf.Abs(distance) < cellSize){
             done = false;

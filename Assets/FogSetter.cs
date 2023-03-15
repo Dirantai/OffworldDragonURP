@@ -31,7 +31,6 @@ public class FogSetter : MonoBehaviour
         enemies = new GameObject[0];
         world = GameObject.FindGameObjectWithTag("World").transform;
         previousObjectCount = world.childCount;
-        player.GetComponent<ShipSystem2>().SetOrbittingBody(transform, 10);
     }
 
     void Update(){

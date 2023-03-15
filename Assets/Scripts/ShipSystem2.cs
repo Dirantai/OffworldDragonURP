@@ -107,7 +107,7 @@ public class ShipSystem2 : BasicForceSystem
         // }
         active = true;
         Cursor.visible = false;
-        setThrusters(shipModel.gameObject.GetComponentsInChildren<ParticleSystem>());
+        setThrusters(fakeModel.gameObject.GetComponentsInChildren<ParticleSystem>());
 
         shipStats.hullGrade = Mathf.Clamp(shipStats.hullGrade / 10, 0.1f, 100);
         shipStats.shieldGrade = Mathf.Clamp(shipStats.shieldGrade / 10, 0.1f, 100);
@@ -371,6 +371,11 @@ public class ShipSystem2 : BasicForceSystem
         Vector3 visualVector = new Vector3(Mathf.Clamp(xPosOffset, -30 * modifier2, 30 * modifier2), Mathf.Clamp(yPosOffset, -30 * modifier2, 30 * modifier2), Mathf.Clamp(zPosOffset, -30 * modifier2, 30 * modifier2 * boostModifier));
 
         shipModel.localPosition = Vector3.Lerp(shipModel.localPosition,  (visualVector / modifier) / 10, 6 * Time.deltaTime);
+
+        fakeModel.localPosition = shipModel.localPosition;
+        fakeModel.localRotation = shipModel.localRotation;
+
+        fakeObject.rotation = transform.rotation;
     }
     
     public virtual void HandleMovement(Vector3 movementInput, Vector3 rotationInput, float maxSpeedMultiplier)

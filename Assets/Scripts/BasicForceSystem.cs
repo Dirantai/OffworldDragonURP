@@ -5,6 +5,8 @@ public class BasicForceSystem : MonoBehaviour
 {
     private Vector3 velocity;
     public Transform shipModel;
+    public Transform fakeModel;
+    public Transform fakeObject;
     public bool decoupled;
 
     [System.Serializable]
