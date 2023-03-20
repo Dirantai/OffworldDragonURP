@@ -107,7 +107,11 @@ public class ShipSystem2 : BasicForceSystem
         // }
         active = true;
         Cursor.visible = false;
-        setThrusters(fakeModel.gameObject.GetComponentsInChildren<ParticleSystem>());
+        if(fakeModel != null){
+            setThrusters(fakeModel.gameObject.GetComponentsInChildren<ParticleSystem>());
+        }else{
+            setThrusters(shipModel.gameObject.GetComponentsInChildren<ParticleSystem>());
+        }
 
         shipStats.hullGrade = Mathf.Clamp(shipStats.hullGrade / 10, 0.1f, 100);
         shipStats.shieldGrade = Mathf.Clamp(shipStats.shieldGrade / 10, 0.1f, 100);

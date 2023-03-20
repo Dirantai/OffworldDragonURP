@@ -20,7 +20,9 @@ public class WorldMovement : MonoBehaviour
 
     void Start(){
         player = GameObject.FindGameObjectWithTag("Player").transform;
-        player.position = startingPoint.position;
+        if(startingPoint != null){
+            player.position = startingPoint.position;
+        }
         worldObjects = GameObject.FindObjectsOfType<PlanetInfo>();
         foreach(PlanetInfo wObject in worldObjects){
             if(wObject.sun) sun = wObject;
@@ -45,12 +47,12 @@ public class WorldMovement : MonoBehaviour
         
         foreach(PlanetInfo wObject in worldObjects){
             Vector3 playerToObject = wObject.transform.position - overlayCam.position;
-            float parentDistance = 50;
+            float parentDistance = 100;
             float distance = playerToObject.magnitude;
             float fakeDistance = wObject.currentDistance;
 
             if (wObject.parentBody == null){
-                wObject.currentDistance = 50;
+                wObject.currentDistance = 100;
             }else{
                 parentDistance = (wObject.parentBody.transform.position - overlayCam.position).magnitude;
             }
@@ -76,11 +78,11 @@ public class WorldMovement : MonoBehaviour
             if(distance > wObject.hideDistance){
                 wObject.planetIcon.gameObject.SetActive(true);
                 if(distance > wObject.hideDistance + 500){
-                    wObject.planetIcon.gameObject.layer = LayerMask.NameToLayer("WorldIcon");
+                    //wObject.planetIcon.gameObject.layer = LayerMask.NameToLayer("WorldIcon");
                     wObject.planet.SetActive(false);
                 }else{
-                    fakeDistance = distance - 100;
-                    wObject.planetIcon.gameObject.layer = LayerMask.NameToLayer("Default");
+                    //fakeDistance = distance - 100;
+                    //wObject.planetIcon.gameObject.layer = LayerMask.NameToLayer("Default");
                     
                     wObject.planet.SetActive(true);
                 }
@@ -111,7 +113,9 @@ public class WorldMovement : MonoBehaviour
     void HandleWarpZone(float distance, Vector3 direction){
         if(Mathf.Abs(distance) > cellSize && !done){
             done = true;
-            uiHandler.MoveElements(direction * -distance);
+            if(uiHandler != null){
+                uiHandler.MoveElements(direction * -distance);
+            }
             for (int o = 0; o < transform.childCount; o++){
                 transform.GetChild(o).position += direction * -distance;
                 SimplifiedOrbitSystem orbitData = transform.GetChild(o).GetComponent<SimplifiedOrbitSystem>();
