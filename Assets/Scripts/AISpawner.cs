@@ -47,9 +47,10 @@ public class AISpawner : MonoBehaviour
 
     public void SpawnNewAI()
     {
-        Vector3 randomPosition = player.position + new Vector3( Random.Range(-500, 500), Random.Range(-500, 500), Random.Range(-500, 500));
-        GameObject g = Instantiate(AITypes[currentType], randomPosition, Quaternion.identity);
+        GameObject g = Instantiate(AITypes[currentType], Vector3.zero, Quaternion.identity);
         g.transform.parent = world;
+        Vector3 randomPositon = player.localPosition + new Vector3( Random.Range(-500, 500), Random.Range(-500, 500), Random.Range(-500, 500));
+        g.transform.localPosition = randomPositon;
         if (!defaultStats)
         {
             AIParams.shootInterval = int.Parse(inputFields[0].Fields[0].text); //Weapon Fire Interval

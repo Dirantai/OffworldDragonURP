@@ -1,23 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class RadarSystem : MonoBehaviour
 {
 
     public GameObject[] markers;
     public GameObject markerPrefab;
-    public Material inFront;
-    public Material behind;
+    public Transform cam;
     public Transform player;
-    public LineRenderer lines;
-    public Vector3[] radarPositions;
     public float RadarSize;
 
-    // Start is called before the first frame update
-
-    // Update is called once per frame
-    void FixedUpdate()
+    void LateUpdate()
     {
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
 
@@ -31,8 +23,6 @@ public class RadarSystem : MonoBehaviour
                     Destroy(marker);
                 }
                 markers = new GameObject[enemies.Length];
-                radarPositions = new Vector3[enemies.Length * 2];
-                lines.positionCount = enemies.Length * 2;
             }
 
             for (int enemy = 0; enemy < enemies.Length; enemy++)
@@ -41,35 +31,26 @@ public class RadarSystem : MonoBehaviour
                 {
                     markers[enemy] = Instantiate(markerPrefab, transform.position, transform.rotation, transform);
                 }
-                Vector3 playerToEnemy = enemies[enemy].transform.position - player.transform.position;
+                Vector3 playerToEnemy = enemies[enemy].transform.position - player.position;
+                float dotFront = Vector3.Dot(player.forward, playerToEnemy);
+                float dotRight = Vector3.Dot(player.right, playerToEnemy.normalized);
+                float dotUp = Vector3.Dot(player.up, playerToEnemy.normalized);
 
-                float dotProduct = Vector3.Dot(player.forward, playerToEnemy);
+                float radarDistance = Mathf.Clamp(playerToEnemy.magnitude, 0, RadarSize);
+                Vector3 radarPosition = (transform.right * (dotRight * 3)) + (transform.up * (dotUp * 3));
+                float distance = radarPosition.magnitude;
 
-                if (dotProduct > 0)
+                if (dotFront < 0)
                 {
-                    markers[enemy].GetComponentInChildren<MeshRenderer>().material = inFront;
-                }
-                else
-                {
-                    markers[enemy].GetComponentInChildren<MeshRenderer>().material = behind;
+                    distance = RadarSize;
                 }
 
-                float distanceFromPLayer = playerToEnemy.magnitude;
+                Vector3 updatePosition = transform.position + (radarPosition.normalized * Mathf.Clamp(distance, 0, RadarSize));
 
-                distanceFromPLayer = Mathf.Clamp(distanceFromPLayer, 0, RadarSize);
-
-                float radarDistance = Mathf.Clamp(0.15f * (distanceFromPLayer / RadarSize), 0.065f, 0.1f);
-
-                markers[enemy].transform.position = transform.position + playerToEnemy.normalized * radarDistance;
+                markers[enemy].transform.position = updatePosition;
                 markers[enemy].transform.GetChild(0).rotation = enemies[enemy].transform.rotation;
-                markers[enemy].transform.GetChild(1).LookAt(transform.position);
-
-                markers[enemy].transform.localScale = new Vector3(5, 5, 5) * (distanceFromPLayer / RadarSize);
-
-                radarPositions[2 * enemy] = markers[enemy].transform.localPosition;
+                markers[enemy].transform.GetChild(1).LookAt(cam);
             }
-
-            lines.SetPositions(radarPositions);
         }
         else
         {

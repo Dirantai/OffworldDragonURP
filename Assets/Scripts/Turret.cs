@@ -27,11 +27,13 @@ public class Turret : MonoBehaviour {
         public float Angle;
     }
     public WeaponValues weaponValues;
+    public UIElementHandler UI;
     public GameObject reticleObject;
     public GameObject indecatorReticleObject;
     public Transform reticleParent;
     public UIElementSystem reticle;
-    public Transform indecatorReticle;
+    
+    public UIElementSystem indecatorReticle;
 
     public Parts[] TurretParts;
    
@@ -44,14 +46,25 @@ public class Turret : MonoBehaviour {
     {
         if (reticleObject != null && indecatorReticleObject != null)
         {
+            UI = GameObject.FindObjectOfType<UIElementHandler>();
             GameObject tempObj = Instantiate(reticleObject, reticleParent) as GameObject;
             reticle = tempObj.GetComponent<UIElementSystem>();
+            UI.AddElement(reticle);
             tempObj = Instantiate(indecatorReticleObject, reticleParent) as GameObject;
-            indecatorReticle = tempObj.transform;
+            indecatorReticle = tempObj.GetComponent<UIElementSystem>();
+            UI.AddElement(indecatorReticle);
             weaponValues.hitMarker = reticle.GetComponent<HitMarkerSystem>();
         }
         weaponValues.loaded = true;
-        
+    }
+
+    public void DeleteAimIcons(){
+        if(reticle != null){
+            UI.RemoveElement(reticle);
+        }
+        if(indecatorReticle != null){
+            UI.RemoveElement(indecatorReticle);
+        }
     }
 
     private void Update()

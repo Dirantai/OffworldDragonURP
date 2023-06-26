@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 
 public class ShipSystem2 : BasicForceSystem
 {
+    public bool invincible;
     public Rigidbody shipRigid;
     public Transform shipTarget;
     //public Transform cameraObject;
@@ -19,7 +20,7 @@ public class ShipSystem2 : BasicForceSystem
     public MovementValues shipRotationalValues;
 
     [System.Serializable]
-    public class ShipStats
+    public struct ShipStats
     {
         public float shieldGrade;
         public float hullGrade;
@@ -28,6 +29,7 @@ public class ShipSystem2 : BasicForceSystem
         public float boostRechargeSpeed;
     }
     
+    public float landingHeight;
     public float currentShieldHealth;
     public float currentHullHealth;
     public bool active;
@@ -39,14 +41,19 @@ public class ShipSystem2 : BasicForceSystem
 
     private float gravity;
     private Transform orbittingBody;
+    private Transform landingPad;
     private float boostPenalty;
     private float currentRegenTime;
     private float collisionTimer;
     private float currentThrusterVolume;
     //private Quaternion startRotation;
     private bool splashTracker;
+    private bool chargeCruise;
 
     public InputActionAsset inputs;
+    public LayerMask layerMask;
+
+    public Vector3 movementInput;
 
     public void SetOrbittingBody(Transform body, float g){
         orbittingBody = body;
@@ -59,6 +66,10 @@ public class ShipSystem2 : BasicForceSystem
 
     public void SetTracker(bool boolean){
         splashTracker = boolean;
+    }
+
+    public void SetLandingPoint(Transform point){
+        landingPad = point;
     }
 
     float MouseLookSystem(float mouseInputAxis, int maxValue, float deadzone)
@@ -83,7 +94,6 @@ public class ShipSystem2 : BasicForceSystem
 
     private void Start()
     {
-
         // if(cameraObject != null){
         //     startRotation = cameraObject.localRotation;
         // }
@@ -97,7 +107,11 @@ public class ShipSystem2 : BasicForceSystem
         // }
         active = true;
         Cursor.visible = false;
-        setThrusters(shipModel.gameObject.GetComponentsInChildren<ParticleSystem>());
+        if(fakeModel != null){
+            setThrusters(fakeModel.gameObject.GetComponentsInChildren<ParticleSystem>());
+        }else{
+            setThrusters(shipModel.gameObject.GetComponentsInChildren<ParticleSystem>());
+        }
 
         shipStats.hullGrade = Mathf.Clamp(shipStats.hullGrade / 10, 0.1f, 100);
         shipStats.shieldGrade = Mathf.Clamp(shipStats.shieldGrade / 10, 0.1f, 100);
@@ -130,6 +144,7 @@ public class ShipSystem2 : BasicForceSystem
 
     void FixedUpdate()
     {
+        Vector3 rotationInput = Vector3.zero;
         if (active)
         {
             inputs?.actionMaps[0].Enable();
@@ -140,8 +155,7 @@ public class ShipSystem2 : BasicForceSystem
                 g.transform.parent = transform.parent;
                 Destroy(gameObject);
             }
-            Vector3 movementInput = Vector3.zero;
-            Vector3 rotationInput = Vector3.zero;
+            rotationInput = Vector3.zero;
 
             if(inputs != null){
                 movementInput = new Vector3(inputs["Thrust"].ReadValue<float>(), inputs["Lateral Thrust"].ReadValue<float>(), inputs["Vertical Thrust"].ReadValue<float>());
@@ -151,16 +165,66 @@ public class ShipSystem2 : BasicForceSystem
                     rotationInput = new Vector3(inputs["Roll"].ReadValue<float>(), -(inputs["Pitch"].ReadValue<float>() + fakeDelta.y), inputs["Yaw"].ReadValue<float>() + fakeDelta.x);
                     
                 }
+            }else{
+                movementInput = Vector3.zero;
             }
 
             HandleMovement(movementInput, rotationInput, 1);
-            if (visuals) HandleVisuals(rotationInput);
         }
         else
         {
             inputs?.actionMaps[0].Disable();
+            inputs?.actionMaps[0].FindAction("Land").Enable();
             HandleMovement(Vector3.zero, Vector3.zero, 1);
+
+            if(landingPad != null){
+                
+                Vector3 newPos = landingPad.position + landingPad.up * landingHeight;
+
+                float distanceToPad = (landingPad.position - transform.position).magnitude;
+                if(distanceToPad < 0.01f + landingHeight){
+                    shipRigid.constraints = RigidbodyConstraints.FreezeAll;
+                    transform.position = Vector3.Lerp(transform.position, newPos, 3 * Time.deltaTime);
+                    transform.rotation = Quaternion.Lerp(transform.rotation, landingPad.rotation, 3 * Time.deltaTime);
+                }else{
+                    Vector3 aimPos = landingPad.position + (landingPad.forward * 100);
+                    Vector3 landAim = LandAim(newPos + (landingPad.up * 100));
+                    Vector3 yawAim = AimAtTarget(newPos, aimPos, false);
+                    Vector3 newRot = new Vector3(landAim.x, landAim.y, yawAim.z);
+                    HandleMovement(MoveToTarget (newPos), AimAtTarget(newPos, aimPos, false), 0.05f);
+                    if (visuals) HandleVisuals(Vector3.zero);
+                }
+            }
         }
+        if (visuals) HandleVisuals(rotationInput);
+    }
+
+    public Vector3 LandAim(Vector3 target)
+    {
+        float verticalProduct = Vector3.Dot(-transform.up, (target - transform.position).normalized);
+        float rollProduct = Vector3.Dot(transform.right, (target - transform.position).normalized);
+        return new Vector3(Mathf.Clamp(rollProduct, -1, 1), Mathf.Clamp(verticalProduct, -1, 1), 0);
+    }
+
+    public Vector3 AimAtTarget(Vector3 trueMovementTarget, Vector3 target, bool roll)
+    {
+        float horizontalProduct = Vector3.Dot(transform.right, (target - transform.position).normalized);
+        float verticalProduct = Vector3.Dot(-transform.up, (target - transform.position).normalized);
+        float rollProduct = 0;
+        if (roll)
+        {
+            rollProduct = Vector3.Dot(-transform.right, trueMovementTarget - transform.position);
+        }
+        return new Vector3(Mathf.Clamp(rollProduct, -1, 1), Mathf.Clamp(verticalProduct, -1, 1), Mathf.Clamp(horizontalProduct, -1, 1));
+    }
+
+    public Vector3 MoveToTarget(Vector3 trueMovementTarget)
+    {
+        float horizontalProduct = Vector3.Dot(transform.right, (trueMovementTarget - transform.position));
+        float verticalProduct = Vector3.Dot(transform.up, (trueMovementTarget - transform.position));
+        float forwardProduct = Vector3.Dot(transform.forward, (trueMovementTarget - transform.position));
+
+        return new Vector3(Mathf.Clamp(forwardProduct, -1, 1), Mathf.Clamp(horizontalProduct, -1, 1), Mathf.Clamp(verticalProduct, -1, 1));
     }
 
     void ShieldRegen()
@@ -182,9 +246,8 @@ public class ShipSystem2 : BasicForceSystem
             }
         }
     }
-
-    //private bool locked;
-
+    private float cruiseTimer;
+    private bool chargeToggle;
     public virtual void OnUpdate()
     {
         ShieldRegen();
@@ -193,9 +256,28 @@ public class ShipSystem2 : BasicForceSystem
         fakeDelta = Vector2.ClampMagnitude(fakeDelta, 1);
         fakeDelta = Vector2.Lerp(fakeDelta, Vector2.zero, 6 * Time.deltaTime);
 
-        if (inputs["Missile"].triggered)
-        {
-            missiles?.FireMissile(gunSystem.shipTarget);
+        chargeCruise = inputs["Super Cruise"].ReadValue<float>() > 0.5f && !superCruising ? true : false;
+        SuperCruise();
+
+        if(chargeCruise){
+            cruiseTimer += Time.deltaTime;
+            if(cruiseTimer >= 3){
+                chargeToggle = false;
+                superCruising = true;
+            }
+        }else{
+           cruiseTimer = 0; 
+        }
+
+        if(inputs["Land"].triggered && landingPad != null){
+            Debug.Log("attempt");
+            float distanceToPad = (landingPad.position - transform.position).magnitude;
+            if(distanceToPad < 10){
+                if(!active){
+                    shipRigid.constraints = RigidbodyConstraints.FreezeRotation;    
+                }
+                active = !active;
+            }
         }
 
         if(currentBoost < 100){
@@ -206,21 +288,55 @@ public class ShipSystem2 : BasicForceSystem
 
         if(currentBoost >= 70) boostReady = true;
 
-        if (inputs["Boost"].ReadValue<float>() > 0 && boostReady){
-            ShakeCamera(5, 5, true);
-            boostReady = false;
-            boosting = true;
-            boostPenalty = Mathf.Clamp(currentBoost / 100, 0.8f, 1);
-            currentBoost = 0;
-            boostDuration = 0;
-            soundSystem?.SetVolume(1, "Boost");
-            soundSystem?.PlaySounds("Boost");
-        }
+        if(!superCruising){
+            if (inputs["Missile"].triggered)
+            {
+                missiles?.FireMissile(gunSystem.shipTarget);
+            }
 
-        if (inputs["Decouple"].triggered) decoupled = !decoupled;
+            if (inputs["Boost"].ReadValue<float>() > 0 && boostReady){
+                ShakeCamera(5, 5, true);
+                boostReady = false;
+                boosting = true;
+                boostPenalty = Mathf.Clamp(currentBoost / 100, 0.8f, 1);
+                currentBoost = 0;
+                boostDuration = 0;
+                soundSystem?.SetVolume(1, "Boost");
+                soundSystem?.PlaySounds("Boost");
+            }
+
+            if (inputs["Decouple"].triggered) decoupled = !decoupled;
+        }else{
+            if(inputs["Super Cruise"].ReadValue<float>() < 0.5f){
+                chargeToggle = true;
+            }
+            if(chargeToggle){
+                if(inputs["Super Cruise"].ReadValue<float>() > 0.5f){
+                    superCruising = false;
+                    superCruisingEnd = true;
+                }
+            }
+            decoupled = false;
+        }
 
         if (inputs["Vjoy"].triggered){
             vJoy = !vJoy;
+        }
+    }
+
+    void SuperCruise(){
+        RaycastHit hit;
+        Vector3 hitPos = Vector3.zero;
+        if(Physics.SphereCast(transform.position, 1, transform.forward, out hit, 1500, layerMask)){
+            hitPos = hit.point;
+        }
+
+        if(hitPos != Vector3.zero){
+            chargeCruise = false;
+            if(superCruising){
+                superCruising = false;
+                superCruisingEnd = true;
+            }
         }
     }
 
@@ -259,6 +375,11 @@ public class ShipSystem2 : BasicForceSystem
         Vector3 visualVector = new Vector3(Mathf.Clamp(xPosOffset, -30 * modifier2, 30 * modifier2), Mathf.Clamp(yPosOffset, -30 * modifier2, 30 * modifier2), Mathf.Clamp(zPosOffset, -30 * modifier2, 30 * modifier2 * boostModifier));
 
         shipModel.localPosition = Vector3.Lerp(shipModel.localPosition,  (visualVector / modifier) / 10, 6 * Time.deltaTime);
+
+        fakeModel.localPosition = shipModel.localPosition;
+        fakeModel.localRotation = shipModel.localRotation;
+
+        fakeObject.rotation = transform.rotation;
     }
     
     public virtual void HandleMovement(Vector3 movementInput, Vector3 rotationInput, float maxSpeedMultiplier)
@@ -285,6 +406,22 @@ public class ShipSystem2 : BasicForceSystem
                 maxSpeedVector = maxSpeedVector * shipMovementValues.speedMultiplier;
                 forceVector = forceVector * shipMovementValues.forceMultiplier;
                 movementInput = new Vector3(movementInput.x + 1, movementInput.y, movementInput.z);
+            }
+        }
+
+        if(superCruising){
+            maxSpeedVector = new Vector3(1000, 1, 1);
+            forceVector = new Vector3(1000, 1000, 1000);
+            movementInput = new Vector3(movementInput.x + 2, 0, 0);
+        }
+
+        if(superCruisingEnd){
+            maxSpeedVector = new Vector3(1000, 1, 1);
+            forceVector = new Vector3(1000, 1000, 1000);
+            movementInput = new Vector3(0, 0, 0);
+
+            if(shipRigid.velocity.magnitude < shipMovementValues.maxSpeedVector.x){
+                superCruisingEnd = false;
             }
         }
 
@@ -369,15 +506,17 @@ public class ShipSystem2 : BasicForceSystem
 
     public void OnDamage(float damage)
     {
-        if (currentShieldHealth > 0)
-        {
-            currentShieldHealth -= damage / shipStats.shieldGrade;
-            currentRegenTime = shipStats.shieldDelay;
-        }
-        else
-        {
-            currentShieldHealth = 0;
-            currentHullHealth -= damage / shipStats.hullGrade;
+        if(!invincible){
+            if (currentShieldHealth > 0)
+            {
+                currentShieldHealth -= damage / shipStats.shieldGrade;
+                currentRegenTime = shipStats.shieldDelay;
+            }
+            else
+            {
+                currentShieldHealth = 0;
+                currentHullHealth -= damage / shipStats.hullGrade;
+            }
         }
     }
 
@@ -392,5 +531,6 @@ public class ShipSystem2 : BasicForceSystem
         currentHullHealth = 0;
         Transform camRig = GameObject.FindGameObjectWithTag("CamRig").transform;
         camRig.transform.parent = null;
+        gunSystem.KillIcons();
     }
 }

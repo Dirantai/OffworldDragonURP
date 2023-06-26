@@ -7,8 +7,9 @@ public class ShipAI : ShipSystem2
     
     protected Vector3 movementTarget;
     protected Vector3 movementVector;
-
+    public UIElementHandler uiHandler;
     public GameObject marker;
+
     protected UIElementSystem markerUI;
     protected Vector3 currentInput;
     public Transform canvas;
@@ -48,9 +49,11 @@ public class ShipAI : ShipSystem2
     // Start is called before the first frame update
     public override void OnStart()
     {
+        uiHandler = GameObject.FindObjectOfType<UIElementHandler>();
         canvas = GameObject.FindGameObjectWithTag("Canvas").transform;
         GameObject tempObj = Instantiate(marker, canvas) as GameObject;
         markerUI = tempObj.GetComponent<UIElementSystem>();
+        uiHandler.AddElement(markerUI);
     }
 
     public void SetAIVariables(ShipAI AIParams)
@@ -504,6 +507,7 @@ public class ShipAI : ShipSystem2
     {
         float distanceToShipTarget = (transform.position - shipTarget.position).magnitude;
         shipTarget.GetComponent<ShipSystem2>().OnKill(distanceToShipTarget);
+        uiHandler.RemoveElement(markerUI);
         Destroy(markerUI.gameObject);
     }
 
@@ -653,26 +657,5 @@ public class ShipAI : ShipSystem2
     public void OnLock(Transform attacker)
     {
         shipTarget = attacker;
-    }
-
-    public Vector3 AimAtTarget(Vector3 trueMovementTarget, Vector3 target, bool roll)
-    {
-        float horizontalProduct = Vector3.Dot(transform.right, (target - transform.position).normalized);
-        float verticalProduct = Vector3.Dot(-transform.up, (target - transform.position).normalized);
-        float rollProduct = 0;
-        if (roll)
-        {
-            rollProduct = Vector3.Dot(-transform.right, trueMovementTarget - transform.position);
-        }
-        return new Vector3(Mathf.Clamp(rollProduct, -1, 1), Mathf.Clamp(verticalProduct, -1, 1), Mathf.Clamp(horizontalProduct, -1, 1));
-    }
-
-    public Vector3 MoveToTarget(Vector3 trueMovementTarget)
-    {
-        float horizontalProduct = Vector3.Dot(transform.right, (trueMovementTarget - transform.position));
-        float verticalProduct = Vector3.Dot(transform.up, (trueMovementTarget - transform.position));
-        float forwardProduct = Vector3.Dot(transform.forward, (trueMovementTarget - transform.position));
-
-        return new Vector3(Mathf.Clamp(forwardProduct, -1, 1), Mathf.Clamp(horizontalProduct, -1, 1), Mathf.Clamp(verticalProduct, -1, 1));
     }
 }

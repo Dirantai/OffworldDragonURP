@@ -12,6 +12,8 @@ public class CameraShake : MonoBehaviour
     private float currentImpulse;
     private Vector3 currentSpread;
 
+    public Transform linkedCameras;
+
     public bool impulseTest;
 
     public float impulseRate;
@@ -45,6 +47,7 @@ public class CameraShake : MonoBehaviour
         }
         Quaternion spread = Quaternion.Euler(currentSpread);
         transform.localRotation = Quaternion.Lerp(transform.localRotation, spread, 3 * Time.deltaTime);
+        linkedCameras.localRotation = transform.localRotation;
     }
 
     Vector3 CalculateSpreadVector(float maxSpread)

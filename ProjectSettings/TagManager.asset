@@ -12,6 +12,8 @@ TagManager:
   - Node
   - Ally
   - World
+  - LargeObject
+  - LandingPad
   layers:
   - Default
   - TransparentFX
@@ -23,12 +25,12 @@ TagManager:
   - Enemy
   - EnemyBoolet
   - PlayerBoolet
-  - 
+  - WorldIcon
   - Radar
   - Nodes
-  - 
-  - 
-  - 
+  - Skybox
+  - FakePlayer
+  - Sun
   - 
   - 
   - 
